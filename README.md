@@ -33,3 +33,4 @@ La pagina mostrará el catalogo de platos contacto, reservar mesa y ubicación.
 - ORM: ?
 - Despliegue: AWS, Docker
 ## Esquema entidad-relación de la base de datos, puede ir también con una explicación textual tanto de las entidades que allí aparecen como de las relaciones de las mismas.
+<img width="1202" height="738" alt="image" src="https://github.com/user-attachments/assets/c85f5b32-eeb2-4195-96ce-39f79736c918" />
