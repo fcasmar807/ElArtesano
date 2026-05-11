@@ -129,4 +129,55 @@ class AuthController extends Controller
             ], 404);
         }
     }
+    public function index()
+    {
+        $users = User::all();
+        return response()->json($users);
+    }
+    public function show($id)
+    {
+        $user = User::find($id);
+        if ($user) {
+            return response()->json($user);
+        } else {
+            return response()->json([
+                'error' => 'Usuario no encontrado'
+            ], 404);
+        }
+    }
+    public function update(Request $request, $id)
+    {
+        $user = User::find($id);
+        if (!$user) {
+            return response()->json([
+                'error' => 'Usuario no encontrado'
+            ], 404);        
+        }
+
+        $request->validate([
+            'name' => 'sometimes|required|string|max:255',
+            'email' => 'sometimes|required|email|unique:users,email,' . $user->id,
+            'telefono' => 'sometimes|required|string|max:20',
+            'rol_id' => 'sometimes|required|integer|exists:roles,id',
+        ]);
+        if ($request->has('name')) {
+            $user->name = $request->name;
+        }
+        if ($request->has('email')) {
+            $user->email = $request->email;
+        }
+        if ($request->has('telefono')) {
+            $user->telefono = $request->telefono;
+        }
+        if ($request->has('rol_id')) {
+            $user->rol_id = $request->rol_id;
+        }
+
+        $user->save();
+
+        return response()->json([
+            'message' => 'Usuario actualizado correctamente',
+            'user' => $user
+        ]);
+    }
 }

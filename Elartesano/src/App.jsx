@@ -9,7 +9,7 @@ import Contact from "./pages/Contact/contact"
 import Userpage from "./pages/userPage/Userpage"
 import ProtectedRoutes from "./util/ProtectedRoutes"
 import EditProfilePage from "./pages/Edit_Profile/edit"
-import { Dashboard } from "./pages/Admin/dashboard"
+import  AdminDashboard  from "./pages/Admin/dashboard"
 import AdminRoute from "./util/AdminRoute"
 function App() {
   return (
@@ -31,7 +31,7 @@ function App() {
             </Route>
 
             <Route element={<AdminRoute />}>
-              <Route path="/admin" element={<Dashboard />} />
+              <Route path="/admin" element={<AdminDashboard />} />
 
             </Route>
           </Route>
