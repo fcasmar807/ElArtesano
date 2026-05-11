@@ -4,8 +4,9 @@ import { useAuth } from "../../pages/context_providers/AuthProvider"; // 👈 IM
 
 export function Header() {
 
-  const { isAuthenticated, logout } = useAuth(); // 👈 sacas el estado
-
+  const { isAuthenticated,  logout, user } = useAuth(); // 👈 sacas el estado
+const isAdmin = user?.rol_id === 1; 
+console.log(isAdmin);
   return (
     <header className={styles.header}>
       <h1>El Artesano</h1>
@@ -43,10 +44,14 @@ export function Header() {
                 <Link to="/admin">Admin</Link>
               </li>
             )}
-              <li>
+            {!isAdmin && (
+                <li>
                 <Link to="/perfil">Mi Perfil</Link>
               </li>
-              <li>
+           
+
+            )}
+               <li>
                 <button onClick={logout}>Cerrar sesión</button>
               </li>
             </>

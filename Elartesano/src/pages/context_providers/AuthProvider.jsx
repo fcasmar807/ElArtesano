@@ -30,12 +30,15 @@ export function AuthProvider({ children }) {
                 Authorization: `Bearer ${tokenToValidate}`,
             },
         });
-
-        if (!response.ok) {
+           if (!response.ok) {
             throw new Error("Token invalido o caducado");
         }
 
-        return response.json();
+        const dataUser = await response.json();
+        console.log("respuesta dataUser", dataUser);
+
+     
+        return dataUser;
     };
 
     const refreshUser = async () => {
@@ -59,14 +62,16 @@ export function AuthProvider({ children }) {
     };
 
     const login = async (token) => {
+      
         setIsLoggingOut(false);
         setIsAuthenticated(true);
         setToken(token);
         localStorage.setItem(AUTH_TOKEN_KEY, token);
-
+        console.log("guardando token en localstorage");
         try {
             const authenticatedUser = await fetchAuthenticatedUser(token);
             setUser(authenticatedUser);
+            console.log("guardando la información del usuario", authenticatedUser)
         } catch {
             clearAuthState();
             return;
@@ -108,6 +113,7 @@ export function AuthProvider({ children }) {
         };
 
         validateToken();
+        console.log("usuario",user);
     }, []);
 
     return (
