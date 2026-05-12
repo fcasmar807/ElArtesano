@@ -4,3 +4,5 @@ export const ME_ENDPOINT = `${API_BASE_URL}/gestor-pescaderia/public/api/me`;
 export const UPDATE_ME_ENDPOINT = `${API_BASE_URL}/gestor-pescaderia/public/api/me`;
 export const CREATE_ME_ENDPOINT = `${API_BASE_URL}/gestor-pescaderia/public/api/me`;
 export const DELETE_ME_ENDPOINT = `${API_BASE_URL}/gestor-pescaderia/public/api/me`;
+export const GET_INGREDIENTES_ENDPOINT = `${API_BASE_URL}/gestor-pescaderia/public/api/ingredientes`;
+export const GET_PLATOS_ENDPOINT = `${API_BASE_URL}/gestor-pescaderia/public/api/platos`;

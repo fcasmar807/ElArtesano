@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\IngredienteController;
 use App\Http\Controllers\Api\PlatoController;
 use App\Http\Controllers\Api\AuthController;
-
+use App\Http\Controllers\Api\PlatoIngredienteController;
 Route::post('/login', [AuthController::class, 'login']);
 
 Route::middleware('auth:sanctum')->group(function () {
@@ -32,3 +32,5 @@ Route::put('/ingredientes/{id}', [IngredienteController::class, 'update']);
 Route::post('/platos', [PlatoController::class, 'store']);
 Route::get('/platos/{id}', [PlatoController::class, 'show']);
 Route::put('/platos/{id}', [PlatoController::class, 'update']);
+
+Route::get('/plato-ingrediente/filter/{plato_id}', [PlatoIngredienteController::class, 'filter']);

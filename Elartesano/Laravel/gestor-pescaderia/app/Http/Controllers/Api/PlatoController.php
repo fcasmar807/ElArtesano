@@ -26,4 +26,12 @@ class PlatoController extends Controller
         ]);
         return redirect()->route('platos.index');
     }
+
+    public function show($id)
+    {
+        // Lógica para obtener y devolver un plato específico por su ID
+        $plato = Plato::findOrFail($id);
+        return response()->json($plato);
+    }
+    
 }
