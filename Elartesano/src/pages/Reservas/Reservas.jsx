@@ -1,10 +1,9 @@
 import { useState, useEffect } from "react";
 import "./Reservas.css";
 
-// ─── Ajusta estas rutas a tu config ─────────────────────────────────
 import { GET_HORAS_ENDPOINT, POST_RESERVA_ENDPOINT } from "../../util/config";
 
-// ─── Helpers ─────────────────────────────────────────────────────────
+// ─── Helpers ──────────────────────────────────────────────────────────
 const hoy = () => new Date().toISOString().split("T")[0];
 
 const formatFechaLegible = (iso) => {
@@ -15,10 +14,18 @@ const formatFechaLegible = (iso) => {
   return `${Number(d)} de ${meses[Number(m) - 1]} de ${y}`;
 };
 
+// ─── Mesas disponibles (ajusta según tu negocio) ──────────────────────
+const MESAS = [
+  { id: 1, label: "Mesa 1", capacidad: 2 },
+  { id: 2, label: "Mesa 2", capacidad: 4 },
+  { id: 3, label: "Mesa 3", capacidad: 6 },
+  { id: 4, label: "Mesa 4", capacidad: 8 },
+];
+
 // ─── Sub-componentes ──────────────────────────────────────────────────
 
 function StepIndicator({ step }) {
-  const pasos = ["Fecha", "Hora", "Confirmar"];
+  const pasos = ["Mesa", "Fecha", "Hora", "Confirmar"];
   return (
     <div className="rv-steps">
       {pasos.map((label, i) => {
@@ -43,16 +50,61 @@ function StepIndicator({ step }) {
   );
 }
 
+// ─── Paso 0: Selector de mesa y comensales ────────────────────────────
+function MesaSelector({ mesaId, comensales, onMesaChange, onComensalesChange }) {
+  return (
+    <div className="rv-card">
+      <p className="rv-card__label">🪑 Selecciona una mesa</p>
+      <div className="rv-mesas-grid">
+        {MESAS.map((mesa) => (
+          <button
+            key={mesa.id}
+            onClick={() => onMesaChange(mesa.id)}
+            className={`rv-mesa-btn${mesaId === mesa.id ? " rv-mesa-btn--selected" : ""}`}
+          >
+            <span className="rv-mesa-btn__icon">🪑</span>
+            <span className="rv-mesa-btn__label">{mesa.label}</span>
+            <span className="rv-mesa-btn__cap">hasta {mesa.capacidad} personas</span>
+          </button>
+        ))}
+      </div>
+
+      <p className="rv-card__label" style={{ marginTop: "1.5rem" }}>
+        👥 Número de comensales
+      </p>
+      <div className="rv-comensales-row">
+        <button
+          className="rv-counter-btn"
+          onClick={() => onComensalesChange(Math.max(1, comensales - 1))}
+          disabled={comensales <= 1}
+        >−</button>
+        <span className="rv-counter-val">{comensales}</span>
+        <button
+          className="rv-counter-btn"
+          onClick={() => {
+            const mesa = MESAS.find((m) => m.id === mesaId);
+            const max  = mesa ? mesa.capacidad : 8;
+            onComensalesChange(Math.min(max, comensales + 1));
+          }}
+        >+</button>
+      </div>
+      {mesaId && (
+        <p className="rv-comensales-hint">
+          Mesa seleccionada: <strong>
+            {MESAS.find((m) => m.id === mesaId)?.label}
+          </strong> — hasta {MESAS.find((m) => m.id === mesaId)?.capacidad} personas
+        </p>
+      )}
+    </div>
+  );
+}
+
 function HorasGrid({ horas, horaSeleccionada, onSelect, loading }) {
   if (loading) {
     return (
       <div className="rv-hours-skeleton">
         {Array.from({ length: 8 }).map((_, i) => (
-          <div
-            key={i}
-            className="rv-hour-skeleton"
-            style={{ animationDelay: `${i * 0.07}s` }}
-          />
+          <div key={i} className="rv-hour-skeleton" style={{ animationDelay: `${i * 0.07}s` }} />
         ))}
       </div>
     );
@@ -82,10 +134,21 @@ function HorasGrid({ horas, horaSeleccionada, onSelect, loading }) {
   );
 }
 
-function ResumenReserva({ fecha, hora }) {
+function ResumenReserva({ fecha, hora, mesaId, comensales }) {
+  const mesa = MESAS.find((m) => m.id === mesaId);
   if (!fecha || !hora) return null;
   return (
     <div className="rv-summary">
+      <div className="rv-summary__item">
+        <span className="rv-summary__key">Mesa</span>
+        <span className="rv-summary__val">{mesa?.label ?? `Mesa ${mesaId}`}</span>
+      </div>
+      <div className="rv-summary__divider" />
+      <div className="rv-summary__item">
+        <span className="rv-summary__key">Comensales</span>
+        <span className="rv-summary__val">{comensales}</span>
+      </div>
+      <div className="rv-summary__divider" />
       <div className="rv-summary__item">
         <span className="rv-summary__key">Fecha</span>
         <span className="rv-summary__val">{formatFechaLegible(fecha)}</span>
@@ -99,7 +162,8 @@ function ResumenReserva({ fecha, hora }) {
   );
 }
 
-function SuccessScreen({ fecha, hora, onNuevaReserva }) {
+function SuccessScreen({ fecha, hora, mesaId, comensales, onNuevaReserva }) {
+  const mesa = MESAS.find((m) => m.id === mesaId);
   return (
     <div className="rv-success">
       <span className="rv-success__icon">🐠</span>
@@ -109,6 +173,14 @@ function SuccessScreen({ fecha, hora, onNuevaReserva }) {
         Te esperamos en la pescadería.
       </p>
       <div className="rv-success__detail">
+        <div className="rv-success__row">
+          <span>🪑</span>
+          <span>Mesa: <strong>{mesa?.label ?? `Mesa ${mesaId}`}</strong></span>
+        </div>
+        <div className="rv-success__row">
+          <span>👥</span>
+          <span>Comensales: <strong>{comensales}</strong></span>
+        </div>
         <div className="rv-success__row">
           <span>📅</span>
           <span>Fecha: <strong>{formatFechaLegible(fecha)}</strong></span>
@@ -127,6 +199,8 @@ function SuccessScreen({ fecha, hora, onNuevaReserva }) {
 
 // ─── Página principal ─────────────────────────────────────────────────
 export default function Reservas() {
+  const [mesaId, setMesaId]             = useState(null);
+  const [comensales, setComensales]     = useState(1);
   const [fecha, setFecha]               = useState("");
   const [horas, setHoras]               = useState([]);
   const [horaSeleccionada, setHora]     = useState(null);
@@ -135,12 +209,12 @@ export default function Reservas() {
   const [success, setSuccess]           = useState(false);
   const [toast, setToast]               = useState(null);
 
-  // Paso actual del wizard: 1 = fecha, 2 = hora, 3 = confirmar
-  const step = !fecha ? 1 : !horaSeleccionada ? 2 : 3;
+  // Paso actual del wizard: 1=mesa, 2=fecha, 3=hora, 4=confirmar
+  const step = !mesaId ? 1 : !fecha ? 2 : !horaSeleccionada ? 3 : 4;
 
-  // ── Fetch horas disponibles al cambiar fecha ──
+  // ── Fetch horas disponibles al cambiar fecha o mesa ──
   useEffect(() => {
-    if (!fecha) return;
+    if (!fecha || !mesaId) return;
 
     setHoras([]);
     setHora(null);
@@ -152,11 +226,12 @@ export default function Reservas() {
         const headers = { "Content-Type": "application/json" };
         if (token) headers["Authorization"] = `Bearer ${token}`;
 
-        const res = await fetch(`${GET_HORAS_ENDPOINT}?fecha=${fecha}`, { headers });
+        const res = await fetch(
+          `${GET_HORAS_ENDPOINT}?fecha=${fecha}&mesa_id=${mesaId}`,
+          { headers }
+        );
         if (!res.ok) throw new Error(`Error ${res.status}`);
         const data = await res.json();
-
-        // Acepta tanto { horas: [...] } como un array directo [...]
         setHoras(Array.isArray(data) ? data : data.horas ?? []);
       } catch (err) {
         showToast(`No se pudieron cargar las horas: ${err.message}`);
@@ -166,11 +241,11 @@ export default function Reservas() {
     };
 
     fetchHoras();
-  }, [fecha]);
+  }, [fecha, mesaId]);
 
   // ── Submit reserva ──
   const handleSubmit = async () => {
-    if (!fecha || !horaSeleccionada) return;
+    if (!fecha || !horaSeleccionada || !mesaId) return;
     setSubmitting(true);
 
     try {
@@ -183,15 +258,15 @@ export default function Reservas() {
         headers,
         body: JSON.stringify({
           fecha,
-          hora: horaSeleccionada,
-          // El backend extrae el user_id del token (auth()->id())
-          // Si tu backend lo requiere explícito, añade: usuario_id: ...
+          hora:       horaSeleccionada,
+          mesa_id:    mesaId,
+          comensales, // el backend puede ignorarlo si no tiene la columna aún
         }),
       });
 
       if (!res.ok) {
         const err = await res.json().catch(() => ({}));
-        throw new Error(err.message ?? `Error ${res.status}`);
+        throw new Error(err.error ?? err.message ?? `Error ${res.status}`);
       }
 
       setSuccess(true);
@@ -208,6 +283,8 @@ export default function Reservas() {
   };
 
   const resetForm = () => {
+    setMesaId(null);
+    setComensales(1);
     setFecha("");
     setHoras([]);
     setHora(null);
@@ -227,6 +304,8 @@ export default function Reservas() {
           <SuccessScreen
             fecha={fecha}
             hora={horaSeleccionada}
+            mesaId={mesaId}
+            comensales={comensales}
             onNuevaReserva={resetForm}
           />
         </div>
@@ -245,30 +324,47 @@ export default function Reservas() {
           <p className="rv-header__eyebrow">Pescadería</p>
           <h1 className="rv-header__title">Hacer una reserva</h1>
           <p className="rv-header__sub">
-            Elige el día y la hora que más te convenga.
+            Elige mesa, día y hora que más te convenga.
           </p>
         </header>
 
         {/* ── Step indicator ── */}
         <StepIndicator step={step} />
 
-        {/* ── Paso 1: Fecha ── */}
-        <div className="rv-card">
-          <p className="rv-card__label">📅 Elige una fecha</p>
-          <input
-            type="date"
-            className="rv-date-input"
-            value={fecha}
-            min={hoy()}
-            onChange={(e) => {
-              setFecha(e.target.value);
-              setHora(null);
-            }}
-          />
-        </div>
+        {/* ── Paso 1: Mesa y comensales ── */}
+        <MesaSelector
+          mesaId={mesaId}
+          comensales={comensales}
+          onMesaChange={(id) => {
+            setMesaId(id);
+            setFecha("");
+            setHora(null);
+            // Ajustar comensales si supera la capacidad de la nueva mesa
+            const cap = MESAS.find((m) => m.id === id)?.capacidad ?? 8;
+            if (comensales > cap) setComensales(cap);
+          }}
+          onComensalesChange={setComensales}
+        />
 
-        {/* ── Paso 2: Horas disponibles ── */}
-        {fecha && (
+        {/* ── Paso 2: Fecha ── */}
+        {mesaId && (
+          <div className="rv-card">
+            <p className="rv-card__label">📅 Elige una fecha</p>
+            <input
+              type="date"
+              className="rv-date-input"
+              value={fecha}
+              min={hoy()}
+              onChange={(e) => {
+                setFecha(e.target.value);
+                setHora(null);
+              }}
+            />
+          </div>
+        )}
+
+        {/* ── Paso 3: Horas disponibles ── */}
+        {mesaId && fecha && (
           <div className="rv-card rv-hours-section">
             <p className="rv-card__label">🕐 Horas disponibles</p>
             <HorasGrid
@@ -280,12 +376,17 @@ export default function Reservas() {
           </div>
         )}
 
-        {/* ── Paso 3: Resumen + confirmar ── */}
-        {fecha && horaSeleccionada && (
+        {/* ── Paso 4: Resumen + confirmar ── */}
+        {mesaId && fecha && horaSeleccionada && (
           <>
             <div className="rv-card" style={{ animation: "scaleIn .3s ease" }}>
               <p className="rv-card__label">✅ Resumen de tu reserva</p>
-              <ResumenReserva fecha={fecha} hora={horaSeleccionada} />
+              <ResumenReserva
+                fecha={fecha}
+                hora={horaSeleccionada}
+                mesaId={mesaId}
+                comensales={comensales}
+              />
             </div>
 
             <button

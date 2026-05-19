@@ -8,10 +8,16 @@ use Illuminate\Http\Request;
 
 class MesaController extends Controller
 {
-    public function index()
+  
+      public function index()
     {
-        return response()->json(Mesa::with('reservas')->get());
+        $mesas = Mesa::where('estado', 'disponible')
+            ->orderBy('numero')
+            ->get(['id', 'numero', 'capacidad', 'estado']);
+
+        return response()->json($mesas);
     }
+    
     public function store(Request $request)
     {
         $validated = $request->validate([

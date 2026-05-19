@@ -26,11 +26,12 @@ function App() {
             <Route path="/signin" element={<Login />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/platos/:id" element={<PlatoDetalle />} />
-            <Route path="/reservas" element={<Reservas />} />
             <Route element={<ProtectedRoutes />}>
               {/* Aquí van las rutas protegidas */}
               <Route path="/perfil" element={<Userpage />} />
               <Route path="/perfil/editar" element={<EditProfilePage />} />
+                          <Route path="/reservas" element={<Reservas />} />
+
             </Route>
 
             <Route element={<AdminRoute />}>
