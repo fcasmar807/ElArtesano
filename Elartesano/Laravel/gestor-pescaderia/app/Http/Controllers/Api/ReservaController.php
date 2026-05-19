@@ -6,24 +6,73 @@ use Illuminate\Http\Request;
 use App\Models\Reserva;
 class ReservaController extends Controller
 {
-    public function index()
+   public function getHorasDisponibles(Request $request)
     {
-        // Lógica para obtener y devolver una lista de reservas
-        $reservas = Reserva::all();
-        return response()->json($reservas);
+        $request->validate([
+            'fecha' => 'required|date|after_or_equal:today',
+        ]);
+
+        // Horas de servicio de la pescadería — ajusta según tu horario
+        $todasLasHoras = [
+            '10:00', '10:30', '11:00', '11:30',
+            '12:00', '12:30', '13:00', '13:30',
+            '14:00', '14:30', '20:00', '20:30',
+            '21:00', '21:30', '22:00',
+        ];
+
+        // Horas ya ocupadas en esa fecha (estado != cancelada)
+        $horasOcupadas = Reserva::where('fecha', $request->fecha)
+            ->whereIn('estado', ['pendiente', 'confirmada'])
+            ->pluck('hora')
+            ->toArray();
+
+        $horasDisponibles = array_values(
+            array_diff($todasLasHoras, $horasOcupadas)
+        );
+
+        return response()->json([
+            'fecha'  => $request->fecha,
+            'horas'  => $horasDisponibles,
+        ]);
     }
 
+    /**
+     * POST_RESERVA_ENDPOINT
+     * Crea una reserva para el usuario autenticado.
+     * Uso: POST /api/reservas
+     */
     public function store(Request $request)
     {
-        // Lógica para crear un nueva reserva
-      $validated = $request->validate([
-            'fecha' => 'required|date',
-            'hora' => 'required|date_format:H:i:s',
-            'estado' => 'required|in:pendiente,confirmada,cancelada,completada',
-            'usuario_id' => 'required|exists:usuarios,id',
+        $request->validate([
+            'fecha'   => 'required|date|after_or_equal:today',
+            'hora'    => 'required|date_format:H:i',
             'mesa_id' => 'required|exists:mesas,id',
         ]);
-        $reserva = Reserva::create($validated);
-        return response()->json($reserva->load(['usuario', 'mesa']), 201);
+
+        // Comprobar que la hora sigue libre antes de guardar
+        $ocupada = Reserva::where('fecha', $request->fecha)
+            ->where('hora', $request->hora)
+            ->where('mesa_id', $request->mesa_id)
+            ->whereIn('estado', ['pendiente', 'confirmada'])
+            ->exists();
+
+        if ($ocupada) {
+            return response()->json([
+                'error' => 'Esa hora ya no está disponible para esta mesa.',
+            ], 409);
+        }
+
+        $reserva = Reserva::create([
+            'fecha'   => $request->fecha,
+            'hora'    => $request->hora,
+            'estado'  => 'pendiente',
+            'mesa_id' => $request->mesa_id,
+            'user_id' => $request->user()->id,
+        ]);
+
+        return response()->json([
+            'message' => 'Reserva creada correctamente.',
+            'reserva' => $reserva,
+        ], 201);
     }
 }

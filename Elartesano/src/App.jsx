@@ -12,6 +12,7 @@ import EditProfilePage from "./pages/Edit_Profile/edit"
 import  AdminDashboard  from "./pages/Admin/dashboard"
 import AdminRoute from "./util/AdminRoute"
 import { PlatoDetalle } from "./pages/Detalles_Plato/PlatoDetalle"
+import Reservas from "./pages/Reservas/Reservas"
 function App() {
   return (
     <BrowserRouter>
@@ -25,6 +26,7 @@ function App() {
             <Route path="/signin" element={<Login />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/platos/:id" element={<PlatoDetalle />} />
+            <Route path="/reservas" element={<Reservas />} />
             <Route element={<ProtectedRoutes />}>
               {/* Aquí van las rutas protegidas */}
               <Route path="/perfil" element={<Userpage />} />

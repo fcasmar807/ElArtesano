@@ -29,17 +29,17 @@ class PlatoIngredienteController extends Controller
         return response()->json($platoIngrediente, 201);
     }
 
-    public function filter($plato_id)
+ public function filter($plato_id)
 {
-    // Verificar que el plato existe
     $plato = Plato::find($plato_id);
 
     if (!$plato) {
         return response()->json(['message' => 'Plato no encontrado'], 404);
     }
 
-    // Obtener todas las filas de plato_ingrediente con ese plato_id
-    $platoIngredientes = Plato_Ingrediente::where('plato_id', $plato_id)->get();
+    $platoIngredientes = Plato_Ingrediente::with('ingrediente')  
+                            ->where('plato_id', $plato_id)
+                            ->get();
 
     return response()->json($platoIngredientes, 200);
 }

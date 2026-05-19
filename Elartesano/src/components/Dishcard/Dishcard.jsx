@@ -11,7 +11,7 @@ export function DishCard({ nombre, descripcion, precio, imagen }) {
 
         <div className={styles.footer}>
           <span>{precio}€</span>
-          <button>Pedir</button>
+         
         </div>
       </div>
     </div>

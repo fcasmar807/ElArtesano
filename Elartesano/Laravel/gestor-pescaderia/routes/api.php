@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\IngredienteController;
 use App\Http\Controllers\Api\PlatoController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\PlatoIngredienteController;
+use App\Http\Controllers\Api\ReservaController;
 Route::post('/login', [AuthController::class, 'login']);
 
 Route::middleware('auth:sanctum')->group(function () {
@@ -15,6 +16,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/me', [AuthController::class, 'deleteMe']);
     Route::post('/logout', [AuthController::class, 'logout']);
 
+     Route::get('/reservas/horas',  [ReservaController::class, 'getHorasDisponibles']);
+    Route::post('/reservas',       [ReservaController::class, 'store']);
     Route::get('/users', [AuthController::class, 'index']);
     Route::get('/users/{id}', [AuthController::class, 'show']);
     Route::put('/users/{id}', [AuthController::class, 'update']);

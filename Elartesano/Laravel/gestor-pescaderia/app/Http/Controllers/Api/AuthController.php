@@ -129,11 +129,18 @@ class AuthController extends Controller
             ], 404);
         }
     }
-    public function index()
-    {
-        $users = User::all();
-        return response()->json($users);
+   public function index(Request $request)
+{
+    $usuarios = User::all();
+
+    if ($usuarios->isEmpty()) {
+        return response()->json([
+            'message' => 'No hay usuarios registrados'
+        ], 404);
     }
+
+    return response()->json($usuarios, 200);
+}
     public function show($id)
     {
         $user = User::find($id);
