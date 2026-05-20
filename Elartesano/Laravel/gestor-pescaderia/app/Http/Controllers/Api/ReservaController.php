@@ -75,4 +75,25 @@ class ReservaController extends Controller
             'reserva' => $reserva,
         ], 201);
     }
+
+/**
+ * GET_RESERVAS_ENDPOINT
+ * Devuelve todas las reservas con el usuario asociado.
+ * Uso: GET /api/reservas
+ */
+public function index()
+{
+    $reservas = Reserva::with('user')
+        ->orderBy('fecha', 'desc')
+        ->orderBy('hora', 'asc')
+        ->get();
+
+    if ($reservas->isEmpty()) {
+        return response()->json([
+            'message' => 'No hay reservas registradas'
+        ], 404);
+    }
+
+    return response()->json($reservas, 200);
+}
 }

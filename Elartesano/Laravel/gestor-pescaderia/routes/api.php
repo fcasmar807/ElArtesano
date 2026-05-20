@@ -17,20 +17,21 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/me', [AuthController::class, 'deleteMe']);
     Route::post('/logout', [AuthController::class, 'logout']);
 
-    Route::get('/users', [AuthController::class, 'index']);
+  
+    Route::post('/ingredientes', [IngredienteController::class, 'store']);
+    Route::delete('/ingredientes/{id}', [IngredienteController::class, 'destroy']);
+});
+  Route::get('/users', [AuthController::class, 'index']);
     Route::get('/users/{id}', [AuthController::class, 'show']);
     Route::put('/users/{id}', [AuthController::class, 'update']);
     Route::post('/users', [AuthController::class, 'store']);
     Route::delete('/users/{id}', [AuthController::class, 'destroy']);
     Route::delete('/platos/{id}', [PlatoController::class, 'destroy']);
-    Route::post('/ingredientes', [IngredienteController::class, 'store']);
-    Route::delete('/ingredientes/{id}', [IngredienteController::class, 'destroy']);
-});
     Route::get('/platos', [PlatoController::class, 'index']);
 Route::get('/mesas', [MesaController::class, 'index']);
      Route::get('/reservas/horas',  [ReservaController::class, 'getHorasDisponibles']);
     Route::post('/reservas',       [ReservaController::class, 'store']);
- 
+   Route::get('/reservas', [ReservaController::class, 'index']); 
 Route::get('/ingredientes', [IngredienteController::class, 'index']);
 Route::get('/ingredientes/{id}', [IngredienteController::class, 'show']);
 Route::put('/ingredientes/{id}', [IngredienteController::class, 'update']);

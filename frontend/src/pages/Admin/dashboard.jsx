@@ -1,8 +1,9 @@
 import { useState, useEffect, useCallback } from "react";
-import { GET_PLATOS_ENDPOINT } from "../../util/config";
+import { GET_PLATOS_ENDPOINT }   from "../../util/config";
 import { GET_USUARIOS_ENDPOINT } from "../../util/config";
-import { DELETE_ME_ENDPOINT } from "../../util/config";
-import    "./Admindashboard.css";
+import { GET_RESERVAS_ENDPOINT } from "../../util/config";
+import { DELETE_ME_ENDPOINT }    from "../../util/config";
+import "./Admindashboard.css";
 
 /* ─── Skeleton loader ───────────────────────────────────────────── */
 function Skeleton() {
@@ -24,24 +25,22 @@ function ConfirmModal({ item, type, onConfirm, onCancel }) {
   const label =
     type === "plato"
       ? item.nombre ?? item.name ?? "este plato"
+      : type === "reserva"
+      ? `Reserva ${item.fecha} · ${item.hora}`
       : item.nombre ?? item.username ?? item.email ?? "este usuario";
 
   return (
     <div className="ad-modal-overlay">
       <div className="ad-modal">
         <div className="ad-modal__icon">
-          {type === "plato" ? "🐟" : "👤"}
+          {type === "plato" ? "🐟" : type === "reserva" ? "📅" : "👤"}
         </div>
         <p className="ad-modal__sup">Confirmar eliminación</p>
         <h3 className="ad-modal__name">{label}</h3>
         <p className="ad-modal__warning">Esta acción no se puede deshacer.</p>
         <div className="ad-modal__actions">
-          <button className="ad-btn-cancel" onClick={onCancel}>
-            Cancelar
-          </button>
-          <button className="ad-btn-confirm" onClick={onConfirm}>
-            Eliminar
-          </button>
+          <button className="ad-btn-cancel" onClick={onCancel}>Cancelar</button>
+          <button className="ad-btn-confirm" onClick={onConfirm}>Eliminar</button>
         </div>
       </div>
     </div>
@@ -99,14 +98,49 @@ function StatusCell({ active }) {
   );
 }
 
-/* ─── Main Dashboard ────────────────────────────────────────────── */
+/* ─── Estado reserva badge ───────────────────────────────────────── */
+const ESTADO_COLOR = {
+  pendiente:  { bg: "rgba(245,197,66,.12)",  border: "rgba(245,197,66,.35)",  text: "#f5c542" },
+  confirmada: { bg: "rgba(28,184,168,.12)",  border: "rgba(28,184,168,.35)",  text: "#1cb8a8" },
+  cancelada:  { bg: "rgba(255,107,91,.12)",  border: "rgba(255,107,91,.35)",  text: "#ff6b5b" },
+};
+
+function EstadoReserva({ estado }) {
+  const c = ESTADO_COLOR[estado] ?? ESTADO_COLOR.pendiente;
+  return (
+    <span style={{
+      display: "inline-block",
+      padding: "3px 10px",
+      borderRadius: 20,
+      fontSize: 12,
+      fontWeight: 500,
+      background: c.bg,
+      border: `1px solid ${c.border}`,
+      color: c.text,
+      textTransform: "capitalize",
+    }}>
+      {estado ?? "—"}
+    </span>
+  );
+}
+
+/* ─── Column & grid definitions ─────────────────────────────────── */
 const PLATOS_COLS   = ["Nombre", "Descripción", "Precio", "Categoría", ""];
 const USUARIOS_COLS = ["Nombre", "Email", "Rol", "Estado", ""];
+const RESERVAS_COLS = ["Fecha", "Hora", "Mesa", "Usuario", "Estado", ""];
 
+const GRID = {
+  platos:   "1fr 2fr 100px 140px 64px",
+  usuarios: "1fr 1.5fr 120px 120px 64px",
+  reservas: "130px 90px 80px 1fr 120px 64px",
+};
+
+/* ─── Main Dashboard ─────────────────────────────────────────────── */
 export default function AdminDashboard() {
   const [view, setView]         = useState("platos");
   const [platos, setPlatos]     = useState([]);
   const [usuarios, setUsuarios] = useState([]);
+  const [reservas, setReservas] = useState([]);
   const [loading, setLoading]   = useState(false);
   const [error, setError]       = useState(null);
   const [toDelete, setToDelete] = useState(null);
@@ -119,14 +153,22 @@ export default function AdminDashboard() {
     setLoading(true);
     setError(null);
     try {
-      const endpoint = view === "platos" ? GET_PLATOS_ENDPOINT : GET_USUARIOS_ENDPOINT;
-      const token = localStorage.getItem("token"); // ajusta la clave si la guardas con otro nombre
+      const endpoint =
+        view === "platos"   ? GET_PLATOS_ENDPOINT   :
+        view === "usuarios" ? GET_USUARIOS_ENDPOINT :
+                              GET_RESERVAS_ENDPOINT;
+
+      const token = localStorage.getItem("token");
       const headers = { "Content-Type": "application/json" };
       if (token) headers["Authorization"] = `Bearer ${token}`;
+
       const res  = await fetch(endpoint, { headers });
       if (!res.ok) throw new Error(`Error ${res.status}`);
       const data = await res.json();
-      view === "platos" ? setPlatos(data) : setUsuarios(data);
+
+      if (view === "platos")   setPlatos(data);
+      if (view === "usuarios") setUsuarios(data);
+      if (view === "reservas") setReservas(data);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -145,9 +187,7 @@ export default function AdminDashboard() {
     setDeleting(toDelete.id);
     setToDelete(null);
     try {
-      // El endpoint deleteMe borra al usuario autenticado por su token,
-      // no por ID en la URL. Enviamos el token del usuario a eliminar.
-      const token = toDelete.token; // campo token que debe venir en la respuesta de GET_USUARIOS_ENDPOINT
+      const token = toDelete.token;
       const res = await fetch(DELETE_ME_ENDPOINT, {
         method: "DELETE",
         headers: {
@@ -158,6 +198,7 @@ export default function AdminDashboard() {
       if (!res.ok) throw new Error(`Error ${res.status}`);
       if (view === "platos")   setPlatos((p)   => p.filter((x) => x.id !== toDelete.id));
       if (view === "usuarios") setUsuarios((u) => u.filter((x) => x.id !== toDelete.id));
+      if (view === "reservas") setReservas((r) => r.filter((x) => x.id !== toDelete.id));
       showToast("Eliminado correctamente", "success");
     } catch (err) {
       showToast(`No se pudo eliminar: ${err.message}`, "error");
@@ -172,18 +213,21 @@ export default function AdminDashboard() {
   };
 
   /* ── filtered list ── */
-  const list     = view === "platos" ? platos : usuarios;
+  const list =
+    view === "platos"   ? platos   :
+    view === "usuarios" ? usuarios :
+                          reservas;
+
   const filtered = list.filter((item) =>
     JSON.stringify(item).toLowerCase().includes(search.toLowerCase())
   );
 
-  const columns = view === "platos" ? PLATOS_COLS : USUARIOS_COLS;
+  const columns  = view === "platos" ? PLATOS_COLS : view === "usuarios" ? USUARIOS_COLS : RESERVAS_COLS;
+  const gridCols = GRID[view];
 
   /* ─────────────────────────────── RENDER ─────────────────────── */
   return (
     <div className="ad-root">
-
-      {/* background glow */}
       <div className="ad-bg" />
 
       <div className="ad-container">
@@ -202,6 +246,7 @@ export default function AdminDashboard() {
             {[
               { label: "Platos",   count: platos.length,   icon: "🐟" },
               { label: "Usuarios", count: usuarios.length, icon: "👥" },
+              { label: "Reservas", count: reservas.length, icon: "📅" },
             ].map((s) => (
               <div key={s.label} className="ad-stat-pill">
                 <span className="ad-stat-pill__icon">{s.icon}</span>
@@ -219,13 +264,17 @@ export default function AdminDashboard() {
 
           {/* Toggle tabs */}
           <div className="ad-tabs">
-            {["platos", "usuarios"].map((tab) => (
+            {[
+              { key: "platos",   label: "🐟 Platos"  },
+              { key: "usuarios", label: "👤 Usuarios" },
+              { key: "reservas", label: "📅 Reservas" },
+            ].map(({ key, label }) => (
               <button
-                key={tab}
-                onClick={() => setView(tab)}
-                className={`ad-tab${view === tab ? " ad-tab--active" : ""}`}
+                key={key}
+                onClick={() => setView(key)}
+                className={`ad-tab${view === key ? " ad-tab--active" : ""}`}
               >
-                {tab === "platos" ? "🐟 Platos" : "👤 Usuarios"}
+                {label}
               </button>
             ))}
           </div>
@@ -255,8 +304,11 @@ export default function AdminDashboard() {
         {/* ── Table card ── */}
         <div className="ad-card">
 
-          {/* Table head */}
-          <div className={`ad-table-head ad-table-head--${view}`}>
+          {/* Table head — grid dinámico por vista */}
+          <div
+            className="ad-table-head"
+            style={{ gridTemplateColumns: gridCols }}
+          >
             {columns.map((col, i) => (
               <span
                 key={i}
@@ -297,22 +349,40 @@ export default function AdminDashboard() {
             {!loading && !error && filtered.map((item, i) => (
               <div
                 key={item.id ?? i}
-                className={`ad-row ad-row--${view}`}
-                style={{ animation: `rowIn .35s ease ${i * 0.05}s both` }}
+                className="ad-row"
+                style={{
+                  gridTemplateColumns: gridCols,
+                  animation: `rowIn .35s ease ${i * 0.05}s both`,
+                }}
               >
-                {view === "platos" ? (
+                {/* ── Platos ── */}
+                {view === "platos" && (
                   <>
                     <Cell main={item.nombre ?? item.name} />
                     <Cell main={item.descripcion ?? item.description} muted />
                     <PrecioCell price={item.precio ?? item.price} />
                     <TagCell label={item.categoria ?? item.category} color="sea" />
                   </>
-                ) : (
+                )}
+
+                {/* ── Usuarios ── */}
+                {view === "usuarios" && (
                   <>
                     <Cell main={item.name} />
                     <Cell main={item.email} muted />
                     <TagCell label={item.rol} color="mist" />
                     <StatusCell active={item.estado === "activo"} />
+                  </>
+                )}
+
+                {/* ── Reservas ── */}
+                {view === "reservas" && (
+                  <>
+                    <Cell main={item.fecha} />
+                    <Cell main={item.hora} muted />
+                    <Cell main={item.mesa_id ? `Mesa ${item.mesa_id}` : "—"} muted />
+                    <Cell main={item.user?.name ?? `Usuario #${item.user_id}`} muted />
+                    <EstadoReserva estado={item.estado} />
                   </>
                 )}
 
@@ -354,7 +424,7 @@ export default function AdminDashboard() {
       {toDelete && (
         <ConfirmModal
           item={toDelete}
-          type={view === "platos" ? "plato" : "usuario"}
+          type={view === "platos" ? "plato" : view === "reservas" ? "reserva" : "usuario"}
           onConfirm={handleDelete}
           onCancel={() => setToDelete(null)}
         />
