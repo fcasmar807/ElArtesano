@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
 import { validation } from "../../util/validationForm";
 import "./Login.Module.css";
-import { LOGIN_ENDPOINT } from "../../config";
+import { LOGIN_ENDPOINT } from "../../util/config";
 import { useNavigate } from "react-router-dom";  
 import { useAuth } from "../context_providers/AuthProvider";  // Importa el hook del contexto
 import logo from "../../components/img/LOGO.png";

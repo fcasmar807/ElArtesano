@@ -1,5 +1,5 @@
 import styles from './userPage.module.css'
-import { useAuth } from '../../pages/context_providers/AuthProvider'
+import { useAuth } from '../context_providers/AuthProvider'
 import { Link, Navigate } from 'react-router-dom'
 
 export default function UserPage() {

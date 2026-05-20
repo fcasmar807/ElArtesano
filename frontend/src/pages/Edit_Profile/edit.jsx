@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context_providers/AuthProvider";
-import { UPDATE_ME_ENDPOINT } from "../../config";
+import { UPDATE_ME_ENDPOINT } from "../../util/config";
 import styles from "./editProfile.module.css";
 
 export default function EditProfilePage() {

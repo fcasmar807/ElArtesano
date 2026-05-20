@@ -1,6 +1,6 @@
 import { createContext, useState, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { ME_ENDPOINT } from "../../config";
+import { ME_ENDPOINT } from "../../util/config";
 
 const AuthContext = createContext();
 const AUTH_TOKEN_KEY = "authToken";

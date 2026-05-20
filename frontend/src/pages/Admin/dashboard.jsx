@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { GET_PLATOS_ENDPOINT } from "../../util/config";
 import { GET_USUARIOS_ENDPOINT } from "../../util/config";
-import { DELETE_ME_ENDPOINT } from "../../config";
+import { DELETE_ME_ENDPOINT } from "../../util/config";
 import    "./Admindashboard.css";
 
 /* ─── Skeleton loader ───────────────────────────────────────────── */
