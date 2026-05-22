@@ -36,5 +36,7 @@ La pagina mostrará el catalogo de platos contacto, reservar mesa y ubicación.
 <img width="1202" height="738" alt="image" src="https://github.com/user-attachments/assets/c85f5b32-eeb2-4195-96ce-39f79736c918" />
 
 
+Pagina desplegada: https://gestor-pescaderia-frontend.vercel.app/
+
 - EntidadRol: nombre(administrador, cliente, anónimo)
 - Entidad Reserva: estado(activada, confirmada y cancelada)
