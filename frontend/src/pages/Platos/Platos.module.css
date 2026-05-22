@@ -1,58 +1,152 @@
+/* ── El Artesano · Platos.module.css ───────────────────────────────────── */
+ 
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=EB+Garamond:wght@400;500&display=swap');
+ 
+/* ══════════════════════════════════════════════════════════════════════════
+   PAGE CONTAINER
+══════════════════════════════════════════════════════════════════════════ */
 .container {
   min-height: 100vh;
-  padding: 40px 20px;
-
-  /* fondo suave */
-  background: linear-gradient(135deg, #008cff, #e6dfd8);
+  background-color: #1C1208;
+  background-image: radial-gradient(
+    ellipse 80% 40% at 50% 0%,
+    rgba(201, 168, 76, 0.06) 0%,
+    transparent 65%
+  );
+  padding: 5rem 2rem 6rem;
+  font-family: 'EB Garamond', serif;
+  color: #E8D9B8;
 }
-
-/* Título */
-.container h1 {
+ 
+/* ── Page title ────────────────────────────────────────────────────────── */
+.container > h1 {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-weight: 300;
+  font-size: clamp(2.4rem, 5vw, 3.8rem);
+  letter-spacing: 0.06em;
   text-align: center;
-  font-size: 2.5rem;
-  margin-bottom: 40px;
-  color: #3e2c23;
-
-  letter-spacing: 1px;
+  margin: 0 0 0.6rem;
+ 
+  background: linear-gradient(
+    105deg,
+    #8C6E2F 0%,
+    #E2C47A 38%,
+    #C9A84C 58%,
+    #8C6E2F 100%
+  );
+  background-size: 220% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: shimmer 7s linear infinite;
 }
-
-/* Grid responsive */
+ 
+/* Gold rule under title */
+.container > h1::after {
+  content: '';
+  display: block;
+  width: 70px;
+  height: 1px;
+  margin: 1rem auto 0;
+  background: linear-gradient(90deg, transparent, #C9A84C, transparent);
+}
+ 
+@keyframes shimmer {
+  0%   { background-position: 220% center; }
+  100% { background-position:   0% center; }
+}
+ 
+/* ══════════════════════════════════════════════════════════════════════════
+   GRID
+══════════════════════════════════════════════════════════════════════════ */
 .grid {
-  max-width: 1200px;
-  margin: 0 auto;
-
+  max-width: 1100px;
+  margin: 3.5rem auto 0;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 30px;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 2rem;
 }
-
-/* Animación de entrada */
-.grid > * {
-  animation: fadeUp 0.6s ease forwards;
-  opacity: 0;
+ 
+/* ══════════════════════════════════════════════════════════════════════════
+   CARD WRAPPER
+══════════════════════════════════════════════════════════════════════════ */
+.cardWrapper {
+  background: #221508;
+  border: 1px solid rgba(201, 168, 76, 0.22);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transition: box-shadow 0.3s ease, transform 0.25s ease;
+ 
+  animation: fadeUp 0.6s ease both;
 }
-
-/* Delay progresivo para efecto bonito */
-.grid > *:nth-child(1) { animation-delay: 0.1s; }
-.grid > *:nth-child(2) { animation-delay: 0.2s; }
-.grid > *:nth-child(3) { animation-delay: 0.3s; }
-.grid > *:nth-child(4) { animation-delay: 0.4s; }
-
-/* Keyframes */
+ 
+.cardWrapper:hover {
+  transform: translateY(-4px);
+  box-shadow:
+    0 12px 40px rgba(0, 0, 0, 0.5),
+    0 0 0 1px rgba(201, 168, 76, 0.18),
+    0 4px 24px rgba(201, 168, 76, 0.08);
+}
+ 
 @keyframes fadeUp {
-  from {
-    opacity: 0;
-    transform: translateY(25px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
-
-/* Responsive extra */
+ 
+/* ── "Ver detalles" button ─────────────────────────────────────────────── */
+.detalleBtn {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background: transparent;
+  border: none;
+  border-top: 1px solid rgba(201, 168, 76, 0.22);
+  cursor: pointer;
+ 
+  font-family: 'EB Garamond', serif;
+  font-size: 0.88rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #A89070;
+ 
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: background 0.25s ease, color 0.25s ease;
+}
+ 
+.detalleBtn::after {
+  content: '→';
+  font-size: 1rem;
+  transition: transform 0.25s ease;
+}
+ 
+/* Hide the inline arrow from JSX so only the CSS one shows */
+.detalleBtn {
+  /* The JSX renders "Ver detalles →"; the CSS arrow is redundant,
+     so we let the text stand and just animate it on hover */
+}
+ 
+.cardWrapper:hover .detalleBtn {
+  background: rgba(201, 168, 76, 0.06);
+  color: #C9A84C;
+}
+ 
+.cardWrapper:hover .detalleBtn::after {
+  transform: translateX(4px);
+}
+ 
+/* ══════════════════════════════════════════════════════════════════════════
+   RESPONSIVE
+══════════════════════════════════════════════════════════════════════════ */
 @media (max-width: 600px) {
-  .container h1 {
-    font-size: 2rem;
+  .container {
+    padding: 4rem 1rem 5rem;
+  }
+ 
+  .grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
   }
 }

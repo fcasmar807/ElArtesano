@@ -1,53 +1,108 @@
-.card{
-  background:white;
-  border-radius:16px;
-  overflow:hidden;
-  box-shadow:0 8px 20px rgba(0,0,0,0.1);
-  transition:0.25s;
+/* ── El Artesano · Dishcard.module.css ─────────────────────────────────── */
+
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=EB+Garamond:wght@400;500&display=swap');
+
+/* ══════════════════════════════════════════════════════════════════════════
+   CARD
+══════════════════════════════════════════════════════════════════════════ */
+.card {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  background: transparent; /* cardWrapper in Platos owns the background */
+  font-family: 'EB Garamond', serif;
+  color: #E8D9B8;
 }
 
-.card:hover{
-  transform:translateY(-6px);
-  box-shadow:0 12px 30px rgba(0,0,0,0.15);
+/* ── Image ─────────────────────────────────────────────────────────────── */
+.card img {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  display: block;
+
+  /* Subtle warm tint so every image feels on-brand */
+  filter: brightness(0.88) sepia(0.15);
+  transition: filter 0.4s ease, transform 0.4s ease;
+  transform-origin: center;
 }
 
-.card img{
-  width:100%;
-  height:180px;
-  object-fit:cover;
+.card:hover img {
+  filter: brightness(0.96) sepia(0.08);
+  transform: scale(1.03);
 }
 
-.content{
-  padding:1rem;
+/* Clip overflow so the scale doesn't bleed outside the card */
+.card {
+  overflow: hidden;
 }
 
-.content h3{
-  margin:0;
-  color: black;
+/* ══════════════════════════════════════════════════════════════════════════
+   CONTENT BLOCK
+══════════════════════════════════════════════════════════════════════════ */
+.content {
+  padding: 1.4rem 1.6rem 1.2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  flex: 1;
 }
 
-.content p{
-  color:#666;
-  font-size:0.9rem;
+/* ── Dish name — h3 ────────────────────────────────────────────────────── */
+.content h3 {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-weight: 400;
+  font-size: 1.35rem;
+  letter-spacing: 0.03em;
+  color: #E2C47A;
+  margin: 0;
+  line-height: 1.25;
+  transition: color 0.25s ease;
 }
 
-.footer{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin-top:10px;
+.card:hover .content h3 {
+  color: #C9A84C;
 }
 
-.footer span{
-  font-weight:bold;
-  color:#e63946;
+/* ── Description — p ──────────────────────────────────────────────────── */
+.content p {
+  font-family: 'EB Garamond', serif;
+  font-size: 0.97rem;
+  line-height: 1.7;
+  color: #A89070;
+  margin: 0;
+
+  /* Clamp to 3 lines to keep cards uniform height */
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
-button{
-  background:#1d3557;
-  border:none;
-  color:white;
-  padding:6px 12px;
-  border-radius:8px;
-  cursor:pointer;
+/* ══════════════════════════════════════════════════════════════════════════
+   FOOTER (price row)
+══════════════════════════════════════════════════════════════════════════ */
+.footer {
+  margin-top: auto;
+  padding-top: 0.9rem;
+  border-top: 1px solid rgba(201, 168, 76, 0.18);
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+/* Price */
+.footer span {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 400;
+  font-size: 1.25rem;
+  letter-spacing: 0.04em;
+  color: #C9A84C;
+}
+
+.footer span::after {
+  content: ' €';
+  font-size: 0.9em;
+  color: #8C6E2F;
 }
