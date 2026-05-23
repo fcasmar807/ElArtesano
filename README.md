@@ -1,9 +1,7 @@
 # ElArtesano
 
-
-
 ## Autor del proyecto 
-Fernando
+Fernando Casatro Martínez
 ## Título y temática
 El Artesano - Pagina web de pescaderia
 ## Objetivos/descripción
@@ -71,8 +69,8 @@ php artisan migrate --seed
 
 En mi caso. Yo realicé el migrate --seed con un force dentro de RailWay 
 
-##Video 
-##Documentación tecnica 
+## Video 
+## Documentación tecnica 
 El Artesano es una aplicación compuesta de dos capaas independientes
 
 Frontend, desplegado en Vercel y hecho con React ( Vite + JavaScript) 
@@ -89,14 +87,14 @@ Vite 8
 React Router 7
 react-router-dom
 
-##Flujo de autenticación 
+## Flujo de autenticación 
 - El usuario hace login → el backend devuelve un token Sanctum.
 - El token y los datos del usuario se guardan en localStorage.
 - AuthContext los expone mediante useAuth() a toda la app.
 - Las rutas protegidas (ProtectedRoute, AdminRoute) redirigen a /login si no hay sesión activa.
 - Todas las peticiones autenticadas incluyen la cabecera Authorization: Bearer <token>.
 
-##API REST
+## API REST
 La url base es http://elartesano-production.up.railway.app
 
 
@@ -115,7 +113,16 @@ La url base es http://elartesano-production.up.railway.app
 - GET_RESERVAS_ENDPOINT              = Accederá a todas las reservas
 - DELETE_PLATO_ENDPOINT              = Borrará el plato seleccionado
 
+## Enlaces 
 Pagina desplegada: https://gestor-pescaderia-frontend.vercel.app/
 
-- EntidadRol: nombre(administrador, cliente, anónimo)
-- Entidad Reserva: estado(activada, confirmada y cancelada)
+## Bibliografia 
+- React 19 — react.dev
+- React Router v7 — reactrouter.com/docs
+- Vite — vitejs.dev/guide
+- Laravel 11 — laravel.com/docs/11.x
+- Laravel Sanctum — laravel.com/docs/11.x/sanctum
+- Eloquent ORM — laravel.com/docs/11.x/eloquent
+
+## Autor 
+Fernando Castro Martínez 
