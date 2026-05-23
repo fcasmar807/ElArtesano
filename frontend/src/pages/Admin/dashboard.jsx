@@ -126,13 +126,13 @@ function EstadoReserva({ estado }) {
 }
 
 /* ─── Column & grid definitions ─────────────────────────────────── */
-const PLATOS_COLS   = ["Nombre", "Descripción", "Precio", "Categoría", ""];
-const USUARIOS_COLS = ["Nombre", "Email", "Rol", "Estado", ""];
+const PLATOS_COLS   = ["Nombre", "Descripción", "Precio", "Eliminar"];
+const USUARIOS_COLS = ["Nombre", "Email", "Rol", "Eliminar"];
 const RESERVAS_COLS = ["Fecha", "Hora", "Mesa", "Usuario", "Estado", ""];
 
 const GRID = {
-  platos:   "1fr 2fr 100px 140px 64px",
-  usuarios: "1fr 1.5fr 120px 120px 64px",
+  platos:   "1fr 2fr 100px 64px",
+  usuarios: "1fr 1.5fr 120px 64px",
   reservas: "130px 90px 80px 1fr 120px 64px",
 };
 
@@ -307,15 +307,7 @@ export default function AdminDashboard() {
             />
           </div>
 
-          {/* Refresh */}
-          <button
-            className="ad-btn-refresh"
-            onClick={fetchData}
-            disabled={loading}
-          >
-            <span className={loading ? "ad-spin" : ""}>↻</span>
-            Actualizar
-          </button>
+          
         </div>
 
         {/* ── Table card ── */}
@@ -378,7 +370,6 @@ export default function AdminDashboard() {
                     <Cell main={item.nombre ?? item.name} />
                     <Cell main={item.descripcion ?? item.description} muted />
                     <PrecioCell price={item.precio ?? item.price} />
-                    <TagCell label={item.categoria ?? item.category} color="sea" />
                   </>
                 )}
 
@@ -388,7 +379,6 @@ export default function AdminDashboard() {
                     <Cell main={item.name} />
                     <Cell main={item.email} muted />
                     <TagCell label={item.rol} color="mist" />
-                    <StatusCell active={item.estado === "activo"} />
                   </>
                 )}
 

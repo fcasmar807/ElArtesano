@@ -13,3 +13,4 @@ export const CREATE_ME_ENDPOINT                 = `${API_BASE_URL}/api/me`;
 export const DELETE_ME_ENDPOINT                 = `${API_BASE_URL}/api/me`;
 export const GET_INGREDIENTES_ENDPOINT          = `${API_BASE_URL}/api/ingredientes`;
 export const GET_RESERVAS_ENDPOINT              = `${API_BASE_URL}/api/reservas`;
+export const DELETE_PLATO_ENDPOINT                 = `${API_BASE_URL}/api/platos`;

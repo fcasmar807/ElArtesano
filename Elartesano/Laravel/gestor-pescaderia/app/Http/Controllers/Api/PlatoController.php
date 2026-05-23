@@ -26,9 +26,9 @@ class PlatoController extends Controller
         ]);
         return redirect()->route('platos.index');
     }
-    public function destroy($id)
+    public function destroy($platoId)
 {
-    $plato = Plato::find($id);
+    $plato = Plato::find($platoId);
 
     if (!$plato) {
         return response()->json([
