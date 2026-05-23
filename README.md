@@ -32,6 +32,15 @@ La pagina mostrará el catalogo de platos contacto, reservar mesa y ubicación.
 - Base de datos: Mysql
 - ORM: ?
 - Despliegue: AWS, Docker
+
+## Base de datos
+- Users: Contendra los usuarios y sus datos correspondientes
+- Rol: Contiene el rol admin y el rol usuario. Si no hay un rol asignado se le conocerá como anonimo 
+- Reserva: Contiene la información de las reservas.
+- Mesa: Contiene los datos de las mesas del restaurante
+- Plato: Información de los platos, nombre texto, imagen y etc.
+- Plato_Ingrediente: Tabla que gestionará la cantidad de ingredientes que contiene un plato
+- Ingrediente: Tabla que contiene todos los ingredientes que podran llevar los platos.
 ## Esquema entidad-relación de la base de datos, puede ir también con una explicación textual tanto de las entidades que allí aparecen como de las relaciones de las mismas.
 <img width="1202" height="738" alt="image" src="https://github.com/user-attachments/assets/c85f5b32-eeb2-4195-96ce-39f79736c918" />
 
