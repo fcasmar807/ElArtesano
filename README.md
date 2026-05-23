@@ -1,7 +1,7 @@
 # ElArtesano
 
 ## Autor del proyecto 
-Fernando Casatro Martínez
+Fernando Castro Martínez
 ## Título y temática
 El Artesano - Pagina web de pescaderia
 ## Objetivos/descripción
