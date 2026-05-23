@@ -378,7 +378,7 @@ export default function AdminDashboard() {
                   <>
                     <Cell main={item.name} />
                     <Cell main={item.email} muted />
-                    <TagCell label={item.rol} color="mist" />
+                    <TagCell label={item.rol_id === 1 ? "Administrador" : "Usuario"} color="mist" />
                   </>
                 )}
 

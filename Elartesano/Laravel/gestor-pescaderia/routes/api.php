@@ -14,13 +14,15 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/me', [AuthController::class, 'me']);
     Route::put('/me', [AuthController::class, 'updateMe']);
     Route::post('/me', [AuthController::class, 'createMe']);
-    Route::delete('/me', [AuthController::class, 'deleteMe']);
     Route::post('/logout', [AuthController::class, 'logout']);
 
   
     Route::post('/ingredientes', [IngredienteController::class, 'store']);
     Route::delete('/ingredientes/{id}', [IngredienteController::class, 'destroy']);
 });
+    Route::delete('/me', [AuthController::class, 'deleteMe']);
+   Route::destroy('/platos/{id}', [PlatoController::class, 'destroy']);
+
   Route::get('/users', [AuthController::class, 'index']);
     Route::get('/users/{id}', [AuthController::class, 'show']);
     Route::put('/users/{id}', [AuthController::class, 'update']);
