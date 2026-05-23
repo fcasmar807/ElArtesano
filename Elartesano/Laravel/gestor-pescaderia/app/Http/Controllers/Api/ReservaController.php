@@ -83,9 +83,11 @@ class ReservaController extends Controller
  */
 public function index()
 {
+
+$reservas = Reserva::all();
+
     $reservas = Reserva::with('user')
-        ->orderBy('fecha', 'desc')
-        ->orderBy('hora', 'asc')
+        ->orderBy('user_id', 'desc')
         ->get();
 
     if ($reservas->isEmpty()) {

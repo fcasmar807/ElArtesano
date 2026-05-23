@@ -3,6 +3,7 @@ import { GET_PLATOS_ENDPOINT }   from "../../util/config";
 import { GET_USUARIOS_ENDPOINT } from "../../util/config";
 import { GET_RESERVAS_ENDPOINT } from "../../util/config";
 import { DELETE_ME_ENDPOINT }    from "../../util/config";
+import { DELETE_PLATO_ENDPOINT } from "../../util/config";
 import "./Admindashboard.css";
 
 /* ─── Skeleton loader ───────────────────────────────────────────── */
@@ -187,14 +188,30 @@ export default function AdminDashboard() {
     setDeleting(toDelete.id);
     setToDelete(null);
     try {
-      const token = toDelete.token;
-      const res = await fetch(DELETE_ME_ENDPOINT, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`,
-        },
-      });
+      const token = localStorage.getItem("token");
+      const headers = {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`,
+      };
+
+      let res;
+      if (view === "platos") {
+        // Borra por ID en la URL
+        res = await fetch(`${DELETE_PLATO_ENDPOINT}/${toDelete.id}`, {
+          method: "DELETE",
+          headers,
+        });
+      } else {
+        // Usuarios: deleteMe usa el token del propio usuario
+        res = await fetch(DELETE_ME_ENDPOINT, {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${toDelete.token}`,
+          },
+        });
+      }
+
       if (!res.ok) throw new Error(`Error ${res.status}`);
       if (view === "platos")   setPlatos((p)   => p.filter((x) => x.id !== toDelete.id));
       if (view === "usuarios") setUsuarios((u) => u.filter((x) => x.id !== toDelete.id));
