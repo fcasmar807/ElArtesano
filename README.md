@@ -55,11 +55,11 @@ composer install
 cp .env.example .env
 
 # 4. Configurar .env:
-#   DB_DATABASE=classicgames
-#   DB_USERNAME=root
-#   DB_PASSWORD=tu_password
-#   APP_URL=http://localhost:8000
-#   FRONTEND_URL=http://localhost:5173   (para CORS)
+-   DB_DATABASE=classicgames
+ -  DB_USERNAME=root
+ - DB_PASSWORD=tu_password
+- APP_URL=http://localhost:8000
+- FRONTEND_URL=http://localhost:5173   (para CORS)
 
 # 5. Generar la clave de aplicación
 php artisan key:generate
@@ -80,7 +80,7 @@ Y BackEnd, hecho con Laravel y desplegado en Railway
 La base de datos está hecha con MySQL 8
 Toda la comunicación entre frontend y backend se realiza mediante fetch nativo sobre endpoints JSON. Las respuestas siempre siguen la misma envoltura:
 
-##Frontend 
+## Frontend 
 React 19
 JavaScript 
 Vite 8
@@ -98,7 +98,7 @@ react-router-dom
 La url base es http://elartesano-production.up.railway.app
 
 
--  GET_PLATOS_ENDPOINT                = Accede a la lista de los platos
+ GET_PLATOS_ENDPOINT                = Accede a la lista de los platos
 -  GET_USUARIOS_ENDPOINT              = Accede a lista de los usuarios
 - GET_HORAS_ENDPOINT                 = Accede a las horas disponibles
 - POST_RESERVA_ENDPOINT              = formulario para las resservas
@@ -115,6 +115,7 @@ La url base es http://elartesano-production.up.railway.app
 
 ## Enlaces 
 Pagina desplegada: https://gestor-pescaderia-frontend.vercel.app/
+video https://drive.google.com/file/d/1KFRwyD7RE052w_wxTjFXr8wKkK0WSqKP/view?usp=sharing
 
 ## Bibliografia 
 - React 19 — react.dev
