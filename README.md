@@ -117,6 +117,13 @@ La url base es http://elartesano-production.up.railway.app
 Pagina desplegada: https://gestor-pescaderia-frontend.vercel.app/
 video https://drive.google.com/file/d/1KFRwyD7RE052w_wxTjFXr8wKkK0WSqKP/view?usp=sharing
 
+## Contraseñas
+- Admin
+  - admin@test.com
+  - Admin_123
+- Cliente
+ - Juan@test.com
+ - Juan_123
 ## Bibliografia 
 - React 19 — react.dev
 - React Router v7 — reactrouter.com/docs
