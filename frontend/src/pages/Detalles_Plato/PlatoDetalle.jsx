@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 // Añade STORAGE_URL al import
-import { GET_PLATOS_ENDPOINT, FILTER_PLATO_INGREDIENTES_ENDPOINT, STORAGE_URL } from "../../util/config"; import styles from "./PlatoDetalle.module.css";
+import { GET_PLATOS_ENDPOINT, FILTER_PLATO_INGREDIENTES_ENDPOINT } from "../../util/config"; import styles from "./PlatoDetalle.module.css";
 
 export function PlatoDetalle() {
   const { id } = useParams();
@@ -76,7 +76,7 @@ export function PlatoDetalle() {
         <div className={styles.imageWrapper}>
           {plato.imagen ? (
             <img
-              src={plato.imagen ? `${STORAGE_URL}/${plato.imagen}` : "/placeholder.jpg"}
+              src={plato.imagen ?? "/placeholder.jpg"}
               alt={plato.nombre}
               className={styles.image}
             />) : (

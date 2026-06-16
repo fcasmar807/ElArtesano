@@ -1,6 +1,6 @@
 import styles from "./Platos.module.css"
 import { DishCard } from "../../components/Dishcard/Dishcard"
-import { GET_PLATOS_ENDPOINT, STORAGE_URL } from '../../util/config';
+import { GET_PLATOS_ENDPOINT } from '../../util/config';
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -82,8 +82,7 @@ export function Platos() {
           <div key={index} className={styles.cardWrapper}>  
           <DishCard
   {...dish}
-  imagen={dish.imagen ? `${STORAGE_URL}/${dish.imagen}` : "/placeholder.jpg"}
-/>
+imagen={dish.imagen ?? "/placeholder.jpg"}/>
             <button                                         
               className={styles.detalleBtn}
               onClick={() => navigate(`/platos/${dish.id}`)}
