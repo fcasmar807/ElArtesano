@@ -27,11 +27,16 @@ class PlatoController extends Controller
 
         $imagenUrl = null;
         if ($request->hasFile('imagen')) {
-            // ✅ Subir a Cloudinary en lugar de almacenamiento local
-            $resultado = Cloudinary::upload($request->file('imagen')->getRealPath(), [
-                'folder' => 'pescaderia/platos'
-            ]);
-            $imagenUrl = $resultado->getSecurePath();
+            try {
+                $resultado = Cloudinary::upload($request->file('imagen')->getRealPath(), [
+                    'folder' => 'pescaderia/platos'
+                ]);
+                $imagenUrl = $resultado->getSecurePath();
+            } catch (\Exception $e) {
+                return response()->json([
+                    'error' => $e->getMessage()
+                ], 500);
+            }
         }
 
         $plato = Plato::create([
