@@ -5,8 +5,9 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Plato;
-use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 
+use Cloudinary\Cloudinary;
+use Cloudinary\Configuration\Configuration;
 class PlatoController extends Controller
 {
     public function index()
@@ -28,14 +29,27 @@ class PlatoController extends Controller
         $imagenUrl = null;
         if ($request->hasFile('imagen')) {
             try {
-                $resultado = Cloudinary::upload($request->file('imagen')->getRealPath(), [
-                    'folder' => 'pescaderia/platos'
-                ]);
-                $imagenUrl = $resultado->getSecurePath();
+                $cloudinary = new Cloudinary(
+                    Configuration::instance([
+                        'cloud' => [
+                            'cloud_name' => env('CLOUDINARY_CLOUD_NAME'),
+                            'api_key'    => env('CLOUDINARY_API_KEY'),
+                            'api_secret' => env('CLOUDINARY_API_SECRET'),
+                        ],
+                        'url' => [
+                            'secure' => true
+                        ]
+                    ])
+                );
+
+                $resultado = $cloudinary->uploadApi()->upload(
+                    $request->file('imagen')->getRealPath(),
+                    ['folder' => 'pescaderia/platos']
+                );
+
+                $imagenUrl = $resultado['secure_url'];
             } catch (\Exception $e) {
-                return response()->json([
-                    'error' => $e->getMessage()
-                ], 500);
+                return response()->json(['error' => $e->getMessage()], 500);
             }
         }
 
@@ -44,7 +58,7 @@ class PlatoController extends Controller
             'descripcion' => $request->descripcion,
             'precio'      => $request->precio,
             'estado'      => $request->estado ?? 'activo',
-            'imagen'      => $imagenUrl, // Ahora guarda la URL completa
+            'imagen'      => $imagenUrl,
         ]);
 
         return response()->json($plato, 201);
