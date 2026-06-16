@@ -4,7 +4,7 @@ import { GET_PLATOS_ENDPOINT } from '../../util/config';
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-const ME_ENDPOINT  = "http://localhost:8080/gestor-pescaderia/public/api/me";
+const ME_ENDPOINT  =  "https://elartesano-production.up.railway.app/api/me"; // Cambia si tu endpoint es diferente
 const ADMIN_ROL_ID = 2; // cambia si tu admin tiene otro rol_id
 
 export function Platos() {

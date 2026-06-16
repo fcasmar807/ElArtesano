@@ -1,9 +1,9 @@
 import { useRef, useState } from "react";
 import "./Register.Module.css";
 import { useNavigate, Link } from "react-router-dom";
+import { REGISTER_ENDPOINT } from "../../util/config";
 
 // ── Ajusta a tu config ────────────────────────────────────────────
-const REGISTER_ENDPOINT = "http://localhost:8080/gestor-pescaderia/public/api/users";
 // ─────────────────────────────────────────────────────────────────
 
 function Register() {
@@ -63,7 +63,7 @@ function Register() {
             });
 
             if (res.ok) {
-                navigate("/ signin", { state: { message: "Cuenta creada con éxito. Inicia sesión." } });
+                navigate("/signin", { state: { message: "Cuenta creada con éxito. Inicia sesión." } });
             } else {
                 const data = await res.json().catch(() => ({}));
                 // Laravel devuelve errores de validación en data.errors

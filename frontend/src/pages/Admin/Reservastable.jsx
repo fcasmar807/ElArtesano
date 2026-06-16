@@ -2,13 +2,10 @@
    ReservasTable.jsx — Tabla de gestión de reservas
 ───────────────────────────────────────────────────────────────── */
 import { useState, useEffect } from "react";
-import { GET_RESERVAS_ENDPOINT } from "../../util/config";
-import { Skeleton, ConfirmModal, Toast, Cell, EstadoReserva, DeleteCell, EmptyState, ErrorState } from "./AdminShared";
+import { GET_RESERVAS_ENDPOINT, API_BASE_URL } from "../../util/config";import { Skeleton, ConfirmModal, Toast, Cell, EstadoReserva, DeleteCell, EmptyState, ErrorState } from "./AdminShared";
 
 const COLS = ["Fecha", "Hora", "Mesa", "Usuario", "Estado", "Acciones"];
 const GRID = "130px 90px 80px 1fr 120px 160px";
-
-const API_BASE = "http://localhost:8080/gestor-pescaderia/public/api";
 
 /* ── Botón de acción pequeño ── */
 function ActionBtn({ label, title, color, onClick }) {
@@ -72,7 +69,7 @@ export default function ReservasTable({ onCountChange }) {
     setConfirming(item.id);
     try {
       const token = localStorage.getItem("authToken");
-      const res = await fetch(`${API_BASE}/reservas/${item.id}/confirmar`, {
+      const res = await fetch(`${API_BASE_URL}/api/reservas/${item.id}/confirmar`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -98,7 +95,7 @@ export default function ReservasTable({ onCountChange }) {
     setCanceling(item.id);
     try {
       const token = localStorage.getItem("authToken");
-      const res = await fetch(`${API_BASE}/reservas/${item.id}/cancelar`, {
+      const res = await fetch(`${API_BASE_URL}/api/reservas/${item.id}/cancelar`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -122,7 +119,7 @@ export default function ReservasTable({ onCountChange }) {
     setCompleting(item.id);
     try {
       const token = localStorage.getItem("authToken");
-      const res = await fetch(`${API_BASE}/reservas/${item.id}/completar`, {
+      const res = await fetch(`${API_BASE_URL}/api/reservas/${item.id}/completar`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",

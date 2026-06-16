@@ -22,7 +22,7 @@ class PlatoController extends Controller
             'descripcion' => 'nullable|string|max:500',
             'precio'      => 'required|numeric|min:0',
             'estado'      => 'nullable|string',
-            'imagen'      => 'nullable|image|max:2048',
+            'imagen'      => 'nullable|image',
         ]);
 
         $imagenUrl = null;
