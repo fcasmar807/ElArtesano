@@ -13,28 +13,44 @@ class PlatoController extends Controller
         return response()->json($platos);
     }
 
-    public function store(Request $request)
-    {
-        // Lógica para crear un nuevo plato
-        $nombre = $request->input('nombre');
-        $descripcion = $request->input('descripcion');
-        $precio = $request->input('precio');
-        $plato = Plato::create([
-            'nombre' => $nombre,
-            'descripcion' => $descripcion,
-            'precio' => $precio
-        ]);
-        return redirect()->route('platos.index');
-    }
-    public function destroy($platoId)
+public function store(Request $request)
 {
-    $plato = Plato::find($platoId);
+    
+    $request->validate([
+        'nombre'      => 'required|string|max:100',
+        'descripcion' => 'nullable|string|max:500',
+        'precio'      => 'required|numeric|min:0',
+        'estado'      => 'nullable|string',
+        'imagen'      => 'nullable|image|max:2048',
+    ]);
+
+    $imagenPath = null;
+    if ($request->hasFile('imagen')) {
+        $imagenPath = $request->file('imagen')->store('platos', 'public');
+    }
+
+    $plato = Plato::create([
+        'nombre'      => $request->nombre,
+        'descripcion' => $request->descripcion,
+        'precio'      => $request->precio,
+        'estado'      => $request->estado ?? 'activo',
+        'imagen'      => $imagenPath,
+    ]);
+
+    return response()->json($plato, 201);
+}
+   public function destroy($id)
+{
+    $plato = Plato::find($id);
 
     if (!$plato) {
         return response()->json([
             'error' => 'Plato no encontrado'
         ], 404);
     }
+
+    // Borrar primero las relaciones en plato_ingrediente
+    $plato->ingredientes()->detach();
 
     $plato->delete();
 

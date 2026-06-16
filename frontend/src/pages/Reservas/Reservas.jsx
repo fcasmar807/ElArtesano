@@ -1,9 +1,13 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import "./Reservas.css";
 
 import { GET_HORAS_ENDPOINT, POST_RESERVA_ENDPOINT } from "../../util/config";
 
-// ─── Helpers ──────────────────────────────────────────────────────────
+// ─── Cambia "token" por la clave exacta que usas en tu login ─────────
+const TOKEN_KEY = "authToken";
+
+// ─── Helpers ─────────────────────────────────────────────────────────
 const hoy = () => new Date().toISOString().split("T")[0];
 
 const formatFechaLegible = (iso) => {
@@ -14,7 +18,7 @@ const formatFechaLegible = (iso) => {
   return `${Number(d)} de ${meses[Number(m) - 1]} de ${y}`;
 };
 
-// ─── Mesas disponibles (ajusta según tu negocio) ──────────────────────
+// ─── Mesas disponibles ────────────────────────────────────────────────
 const MESAS = [
   { id: 1, label: "Mesa 1", capacidad: 2 },
   { id: 2, label: "Mesa 2", capacidad: 4 },
@@ -35,9 +39,7 @@ function StepIndicator({ step }) {
         return (
           <div key={label} style={{ display: "flex", alignItems: "center", flex: 1 }}>
             <div className={`rv-step${active ? " rv-step--active" : ""}${done ? " rv-step--done" : ""}`}>
-              <div className="rv-step__bubble">
-                {done ? "✓" : n}
-              </div>
+              <div className="rv-step__bubble">{done ? "✓" : n}</div>
               <span className="rv-step__label">{label}</span>
             </div>
             {i < pasos.length - 1 && (
@@ -50,7 +52,6 @@ function StepIndicator({ step }) {
   );
 }
 
-// ─── Paso 0: Selector de mesa y comensales ────────────────────────────
 function MesaSelector({ mesaId, comensales, onMesaChange, onComensalesChange }) {
   return (
     <div className="rv-card">
@@ -199,6 +200,8 @@ function SuccessScreen({ fecha, hora, mesaId, comensales, onNuevaReserva }) {
 
 // ─── Página principal ─────────────────────────────────────────────────
 export default function Reservas() {
+  const navigate = useNavigate();
+
   const [mesaId, setMesaId]             = useState(null);
   const [comensales, setComensales]     = useState(1);
   const [fecha, setFecha]               = useState("");
@@ -209,10 +212,18 @@ export default function Reservas() {
   const [success, setSuccess]           = useState(false);
   const [toast, setToast]               = useState(null);
 
-  // Paso actual del wizard: 1=mesa, 2=fecha, 3=hora, 4=confirmar
+  // ── Verificar sesión al montar ──────────────────────────────────────
+  useEffect(() => {
+    const token = localStorage.getItem(TOKEN_KEY);
+    if (!token) {
+      navigate("/signin"); // ← ajusta la ruta a tu página de login
+    }
+  }, [navigate]);
+
+  // Paso actual del wizard
   const step = !mesaId ? 1 : !fecha ? 2 : !horaSeleccionada ? 3 : 4;
 
-  // ── Fetch horas disponibles al cambiar fecha o mesa ──
+  // ── Fetch horas disponibles ─────────────────────────────────────────
   useEffect(() => {
     if (!fecha || !mesaId) return;
 
@@ -222,7 +233,7 @@ export default function Reservas() {
 
     const fetchHoras = async () => {
       try {
-        const token = localStorage.getItem("token");
+        const token = localStorage.getItem(TOKEN_KEY);
         const headers = { "Content-Type": "application/json" };
         if (token) headers["Authorization"] = `Bearer ${token}`;
 
@@ -230,7 +241,10 @@ export default function Reservas() {
           `${GET_HORAS_ENDPOINT}?fecha=${fecha}&mesa_id=${mesaId}`,
           { headers }
         );
+
+        if (res.status === 401) { navigate("/signin"); return; }
         if (!res.ok) throw new Error(`Error ${res.status}`);
+
         const data = await res.json();
         setHoras(Array.isArray(data) ? data : data.horas ?? []);
       } catch (err) {
@@ -241,28 +255,35 @@ export default function Reservas() {
     };
 
     fetchHoras();
-  }, [fecha, mesaId]);
+  }, [fecha, mesaId, navigate]);
 
-  // ── Submit reserva ──
+  // ── Submit reserva ──────────────────────────────────────────────────
   const handleSubmit = async () => {
     if (!fecha || !horaSeleccionada || !mesaId) return;
+
+    const token = localStorage.getItem(TOKEN_KEY);
+    if (!token) {
+      navigate("/signin");
+      return;
+    }
+
     setSubmitting(true);
-
     try {
-      const token = localStorage.getItem("token");
-      const headers = { "Content-Type": "application/json" };
-      if (token) headers["Authorization"] = `Bearer ${token}`;
-
       const res = await fetch(POST_RESERVA_ENDPOINT, {
         method: "POST",
-        headers,
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
+        },
         body: JSON.stringify({
           fecha,
-          hora:       horaSeleccionada,
-          mesa_id:    mesaId,
-          comensales, // el backend puede ignorarlo si no tiene la columna aún
+          hora:      horaSeleccionada,
+          mesa_id:   mesaId,
+          comensales,
         }),
       });
+
+      if (res.status === 401) { navigate("/signin"); return; }
 
       if (!res.ok) {
         const err = await res.json().catch(() => ({}));
@@ -291,7 +312,7 @@ export default function Reservas() {
     setSuccess(false);
   };
 
-  // ─── Render ───────────────────────────────────────────────────────
+  // ── Render ────────────────────────────────────────────────────────
   if (success) {
     return (
       <div className="rv-root">
@@ -319,19 +340,14 @@ export default function Reservas() {
 
       <div className="rv-container">
 
-        {/* ── Header ── */}
         <header className="rv-header">
           <p className="rv-header__eyebrow">Pescadería</p>
           <h1 className="rv-header__title">Hacer una reserva</h1>
-          <p className="rv-header__sub">
-            Elige mesa, día y hora que más te convenga.
-          </p>
+          <p className="rv-header__sub">Elige mesa, día y hora que más te convenga.</p>
         </header>
 
-        {/* ── Step indicator ── */}
         <StepIndicator step={step} />
 
-        {/* ── Paso 1: Mesa y comensales ── */}
         <MesaSelector
           mesaId={mesaId}
           comensales={comensales}
@@ -339,14 +355,12 @@ export default function Reservas() {
             setMesaId(id);
             setFecha("");
             setHora(null);
-            // Ajustar comensales si supera la capacidad de la nueva mesa
             const cap = MESAS.find((m) => m.id === id)?.capacidad ?? 8;
             if (comensales > cap) setComensales(cap);
           }}
           onComensalesChange={setComensales}
         />
 
-        {/* ── Paso 2: Fecha ── */}
         {mesaId && (
           <div className="rv-card">
             <p className="rv-card__label">📅 Elige una fecha</p>
@@ -355,15 +369,11 @@ export default function Reservas() {
               className="rv-date-input"
               value={fecha}
               min={hoy()}
-              onChange={(e) => {
-                setFecha(e.target.value);
-                setHora(null);
-              }}
+              onChange={(e) => { setFecha(e.target.value); setHora(null); }}
             />
           </div>
         )}
 
-        {/* ── Paso 3: Horas disponibles ── */}
         {mesaId && fecha && (
           <div className="rv-card rv-hours-section">
             <p className="rv-card__label">🕐 Horas disponibles</p>
@@ -376,7 +386,6 @@ export default function Reservas() {
           </div>
         )}
 
-        {/* ── Paso 4: Resumen + confirmar ── */}
         {mesaId && fecha && horaSeleccionada && (
           <>
             <div className="rv-card" style={{ animation: "scaleIn .3s ease" }}>
@@ -395,10 +404,7 @@ export default function Reservas() {
               disabled={submitting}
             >
               {submitting ? (
-                <>
-                  <span className="rv-btn-submit__spinner" />
-                  Guardando reserva...
-                </>
+                <><span className="rv-btn-submit__spinner" />Guardando reserva...</>
               ) : (
                 "Confirmar reserva"
               )}
@@ -407,7 +413,6 @@ export default function Reservas() {
         )}
       </div>
 
-      {/* ── Toast error ── */}
       {toast && (
         <div className="rv-toast">
           <span>✕</span>

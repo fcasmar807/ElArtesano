@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { GET_PLATOS_ENDPOINT, FILTER_PLATO_INGREDIENTES_ENDPOINT } from "../../util/config";
-import styles from "./PlatoDetalle.module.css";
+// Añade STORAGE_URL al import
+import { GET_PLATOS_ENDPOINT, FILTER_PLATO_INGREDIENTES_ENDPOINT, STORAGE_URL } from "../../util/config"; import styles from "./PlatoDetalle.module.css";
 
 export function PlatoDetalle() {
   const { id } = useParams();
@@ -75,8 +75,11 @@ export function PlatoDetalle() {
         {/* Imagen */}
         <div className={styles.imageWrapper}>
           {plato.imagen ? (
-            <img src={plato.imagen} alt={plato.nombre} className={styles.image} />
-          ) : (
+            <img
+              src={plato.imagen ? `${STORAGE_URL}/${plato.imagen}` : "/placeholder.jpg"}
+              alt={plato.nombre}
+              className={styles.image}
+            />) : (
             <div className={styles.imagePlaceholder}>Sin imagen</div>
           )}
           {/* Badge de estado */}

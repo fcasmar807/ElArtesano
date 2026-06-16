@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Reserva;
+use Illuminate\Support\Facades\Auth;
 class ReservaController extends Controller
 {
    public function getHorasDisponibles(Request $request)
@@ -43,12 +44,13 @@ class ReservaController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
+       $datos = $request->validate([
             'fecha'   => 'required|date|after_or_equal:today',
             'hora'    => 'required|date_format:H:i',
             'mesa_id' => 'required|exists:mesas,id',
-        ]);
 
+        ]);
+ 
         // Comprobar que la hora sigue libre antes de guardar
         $ocupada = Reserva::where('fecha', $request->fecha)
             ->where('hora', $request->hora)
@@ -56,19 +58,17 @@ class ReservaController extends Controller
             ->whereIn('estado', ['pendiente', 'confirmada'])
             ->exists();
 
+            
         if ($ocupada) {
             return response()->json([
                 'error' => 'Esa hora ya no está disponible para esta mesa.',
             ], 409);
         }
+         
+        $datos['user_id'] = Auth::user()->id; //Problema, no agarra la ID
+        $datos['estado'] = 'pendiente';
 
-        $reserva = Reserva::create([
-            'fecha'   => $request->fecha,
-            'hora'    => $request->hora,
-            'estado'  => 'pendiente',
-            'mesa_id' => $request->mesa_id,
-            'user_id' => $request->user()->id,
-        ]);
+        $reserva = Reserva::create($datos);
 
         return response()->json([
             'message' => 'Reserva creada correctamente.',
@@ -83,19 +83,79 @@ class ReservaController extends Controller
  */
 public function index()
 {
-
-$reservas = Reserva::all();
-
-    $reservas = Reserva::with('user')
-        ->orderBy('user_id', 'desc')
+$reservas = Reserva::with('user')
+        ->orderBy('fecha', 'desc')
         ->get();
 
     if ($reservas->isEmpty()) {
-        return response()->json([
-            'message' => 'No hay reservas registradas'
-        ], 404);
+        return response()->json(['message' => 'No hay reservas registradas'], 404);
     }
 
     return response()->json($reservas, 200);
+}
+/**
+ * Devuelve solo las reservas del usuario autenticado.
+ * GET /api/mis-reservas
+ */
+public function misReservas(Request $request)
+{
+    $reservas = Reserva::where('user_id', Auth::id())
+        ->orderBy('fecha', 'desc')
+        ->get();
+
+    return response()->json($reservas, 200);
+}
+public function confirmar($id)
+{
+    $reserva = Reserva::find($id);
+
+    if (!$reserva) {
+        return response()->json(['error' => 'Reserva no encontrada'], 404);
+    }
+
+    $reserva->estado = 'confirmada';
+    $reserva->save();
+
+    return response()->json([
+        'message' => 'Reserva confirmada correctamente',
+        'reserva' => $reserva,
+    ], 200);
+}
+public function cancelar($id)
+{
+    $reserva = Reserva::find($id);
+    if (!$reserva) {
+        return response()->json(['error' => 'Reserva no encontrada'], 404);
+    }
+    $reserva->estado = 'cancelada';
+    $reserva->save();
+    return response()->json(['message' => 'Reserva cancelada', 'reserva' => $reserva], 200);
+}
+
+public function completar($id)
+{
+    $reserva = Reserva::find($id);
+    if (!$reserva) {
+        return response()->json(['error' => 'Reserva no encontrada'], 404);
+    }
+    $reserva->estado = 'completada';
+    $reserva->save();
+    return response()->json(['message' => 'Reserva completada', 'reserva' => $reserva], 200);
+}
+public function destroy($id)
+{
+    $reserva = Reserva::find($id);
+
+    if (!$reserva) {
+        return response()->json([
+            'error' => 'Reserva no encontrada'
+        ], 404);
+    }
+
+    $reserva->delete();
+
+    return response()->json([
+        'message' => 'Reserva eliminada correctamente'
+    ], 200);
 }
 }

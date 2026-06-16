@@ -8,7 +8,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class Plato extends Model
 {
     use HasFactory;
-    
+     protected $table = 'platos';
+
       protected $fillable = [
  
         'nombre',
@@ -20,8 +21,8 @@ class Plato extends Model
 
   
 
-    public function ingredientes()
-    {
-        return $this->belongsTo(Ingrediente::class, 'ingrediente_id');
-    }
+ public function ingredientes()
+{
+    return $this->belongsToMany(Ingrediente::class, 'plato_ingrediente');
+}
 }

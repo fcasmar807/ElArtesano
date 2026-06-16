@@ -1,0 +1,358 @@
+/* ─── Google Fonts ──────────────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=EB+Garamond:wght@400;500&family=JetBrains+Mono:wght@400;600&display=swap');
+
+/* ─── Variables ─────────────────────────────────────────────────── */
+:root {
+  --mr-ink:          #1C1208;
+  --mr-deep:         #221508;
+  --mr-mid:          #2a1c0a;
+  --mr-panel:        #301f0c;
+  --mr-rim:          #4a3010;
+  --mr-gold:         #C9A84C;
+  --mr-gold-light:   #E2C47A;
+  --mr-gold-dim:     #8C6E2F;
+  --mr-gold-glow:    rgba(201,168,76,.12);
+  --mr-coral:        #C0392B;
+  --mr-mist:         #A89070;
+  --mr-white:        #E8D9B8;
+  --mr-success-bg:   rgba(201,168,76,.12);
+  --mr-success-border: rgba(201,168,76,.35);
+}
+
+/* ─── Keyframes ─────────────────────────────────────────────────── */
+@keyframes mr-fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes mr-fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes mr-spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes mr-shimmer {
+  0%   { background-position: -400px 0; }
+  100% { background-position:  400px 0; }
+}
+
+@keyframes mr-shimmer-gold {
+  0%   { background-position: 220% center; }
+  100% { background-position:   0% center; }
+}
+
+/* ─── Root layout ───────────────────────────────────────────────── */
+.mr-root {
+  min-height: 100vh;
+  background: var(--mr-ink);
+  font-family: 'EB Garamond', serif;
+  display: flex;
+  flex-direction: column;
+}
+
+.mr-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image:
+    radial-gradient(ellipse 70% 50% at 0% 0%,   rgba(201,168,76,.08) 0%, transparent 55%),
+    radial-gradient(ellipse 50% 40% at 100% 100%, rgba(140,110,47,.06) 0%, transparent 55%);
+}
+
+.mr-container {
+  position: relative;
+  z-index: 1;
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 0 24px 64px;
+  width: 100%;
+}
+
+/* ─── Header ────────────────────────────────────────────────────── */
+.mr-header {
+  padding: 40px 0 36px;
+  border-bottom: 1px solid var(--mr-rim);
+  margin-bottom: 40px;
+  animation: mr-fadeUp .5s ease;
+}
+
+.mr-header__eyebrow {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--mr-gold);
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.mr-header__eyebrow::before {
+  content: '';
+  display: inline-block;
+  width: 24px;
+  height: 2px;
+  background: var(--mr-gold);
+  border-radius: 2px;
+}
+
+.mr-header__title {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-weight: 300;
+  font-size: 46px;
+  letter-spacing: 2px;
+  line-height: 1;
+  margin-bottom: 10px;
+
+  background: linear-gradient(
+    105deg,
+    var(--mr-gold-dim)   0%,
+    var(--mr-gold-light) 40%,
+    var(--mr-gold)       60%,
+    var(--mr-gold-dim)   100%
+  );
+  background-size: 220% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: mr-shimmer-gold 6s linear infinite;
+}
+
+.mr-header__sub {
+  font-size: 15px;
+  color: var(--mr-mist);
+  font-weight: 400;
+}
+
+/* ─── Estado vacío / error / loading ────────────────────────────── */
+.mr-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 64px 0;
+  animation: mr-fadeUp .4s ease;
+}
+
+.mr-center__icon { font-size: 48px; margin-bottom: 16px; }
+
+.mr-center__text {
+  color: var(--mr-mist);
+  font-size: 16px;
+  text-align: center;
+}
+
+.mr-center__error {
+  color: var(--mr-coral);
+  font-size: 15px;
+  margin-top: 8px;
+}
+
+.mr-btn-retry {
+  margin-top: 20px;
+  padding: 10px 28px;
+  background: transparent;
+  border: 1px solid var(--mr-gold);
+  border-radius: 8px;
+  color: var(--mr-gold);
+  font-family: 'EB Garamond', serif;
+  font-size: 15px;
+  cursor: pointer;
+  transition: background .2s;
+}
+
+.mr-btn-retry:hover {
+  background: var(--mr-gold-glow);
+}
+
+/* ─── Spinner ────────────────────────────────────────────────────── */
+.mr-spinner {
+  width: 36px;
+  height: 36px;
+  border: 3px solid var(--mr-rim);
+  border-top-color: var(--mr-gold);
+  border-radius: 50%;
+  animation: mr-spin 1s linear infinite;
+  margin-bottom: 16px;
+}
+
+/* ─── Lista de reservas ──────────────────────────────────────────── */
+.mr-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* ─── Card de reserva ────────────────────────────────────────────── */
+.mr-card {
+  background: var(--mr-deep);
+  border: 1px solid var(--mr-rim);
+  border-radius: 14px;
+  padding: 20px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  animation: mr-fadeUp .4s ease both;
+  transition: border-color .2s, box-shadow .2s;
+}
+
+.mr-card:hover {
+  border-color: var(--mr-gold-dim);
+  box-shadow: 0 4px 24px rgba(201,168,76,.08);
+}
+
+/* ─── Lado izquierdo: fecha + info ──────────────────────────────── */
+.mr-card__left {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.mr-date-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: var(--mr-mid);
+  border: 1px solid var(--mr-rim);
+  border-radius: 10px;
+  padding: 10px 14px;
+  min-width: 58px;
+}
+
+.mr-date-block__day {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 26px;
+  font-weight: 600;
+  color: var(--mr-gold-light);
+  line-height: 1;
+}
+
+.mr-date-block__month {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--mr-mist);
+  margin-top: 3px;
+}
+
+.mr-card__info {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.mr-card__hora {
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--mr-white);
+}
+
+.mr-card__mesa {
+  font-size: 13px;
+  color: var(--mr-mist);
+}
+
+/* ─── Lado derecho: badge + botón ───────────────────────────────── */
+.mr-card__right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 12px;
+}
+
+/* ─── Badge de estado ────────────────────────────────────────────── */
+.mr-badge {
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .5px;
+  text-transform: uppercase;
+  border: 1px solid transparent;
+}
+
+.mr-badge--pendiente {
+  background: rgba(201,168,76,.12);
+  border-color: rgba(201,168,76,.35);
+  color: var(--mr-gold-light);
+}
+
+.mr-badge--confirmada {
+  background: rgba(201,168,76,.2);
+  border-color: rgba(201,168,76,.5);
+  color: var(--mr-gold);
+}
+
+.mr-badge--cancelada {
+  background: rgba(120,90,40,.1);
+  border-color: rgba(120,90,40,.3);
+  color: var(--mr-gold-dim);
+}
+
+.mr-badge--completada {
+  background: rgba(201,168,76,.25);
+  border-color: var(--mr-gold);
+  color: var(--mr-gold-light);
+}
+
+/* ─── Botón cancelar ─────────────────────────────────────────────── */
+.mr-btn-cancel {
+  background: none;
+  border: 1px solid rgba(192,57,43,.5);
+  color: #e07060;
+  border-radius: 8px;
+  padding: 6px 16px;
+  font-family: 'EB Garamond', serif;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background .2s, border-color .2s;
+}
+
+.mr-btn-cancel:hover:not(:disabled) {
+  background: rgba(192,57,43,.1);
+  border-color: rgba(192,57,43,.8);
+}
+
+.mr-btn-cancel:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ─── Toast ──────────────────────────────────────────────────────── */
+.mr-toast {
+  position: fixed;
+  bottom: 28px;
+  right: 28px;
+  z-index: 1000;
+  color: #fff;
+  font-family: 'EB Garamond', serif;
+  font-size: 15px;
+  font-weight: 500;
+  padding: 14px 22px;
+  border-radius: 10px;
+  box-shadow: 0 8px 32px rgba(0,0,0,.5);
+  animation: mr-fadeUp .3s ease;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.mr-toast--success { background: #5a3e10; border: 1px solid var(--mr-gold); color: var(--mr-gold-light); }
+.mr-toast--error   { background: var(--mr-coral); }
+
+/* ─── Responsive ─────────────────────────────────────────────────── */
+@media (max-width: 600px) {
+  .mr-header__title { font-size: 34px; }
+  .mr-card { flex-direction: column; align-items: flex-start; }
+  .mr-card__right { align-items: flex-start; flex-direction: row; flex-wrap: wrap; }
+}

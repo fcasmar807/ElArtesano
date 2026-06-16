@@ -1,0 +1,252 @@
+/* ── El Artesano · Register.Module.css ─────────────────────────────────── */
+/* Comparte variables y estructura con Login.Module.css                     */
+
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=EB+Garamond:wght@400;500&display=swap');
+
+/* ── Variables ─────────────────────────────────────────────────────────── */
+:root {
+  --color-bg:           #1C1208;
+  --color-bg-soft:      #231a0a;
+  --color-bg-card:      #221508;
+  --color-gold:         #C9A84C;
+  --color-gold-light:   #E2C47A;
+  --color-gold-dim:     #8C6E2F;
+  --color-gold-border:  rgba(201, 168, 76, 0.25);
+  --color-gold-glow:    rgba(201, 168, 76, 0.10);
+  --color-text:         #E8D9B8;
+  --color-text-muted:   #A89070;
+  --color-text-faint:   #6E5A3E;
+  --color-error:        #C0392B;
+  --color-error-bg:     rgba(192, 57, 43, 0.10);
+  --color-error-border: rgba(192, 57, 43, 0.45);
+
+  --font-display: 'Cormorant Garamond', serif;
+  --font-body:    'EB Garamond', serif;
+}
+
+@keyframes shimmer {
+  0%   { background-position: 220% center; }
+  100% { background-position:   0% center; }
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20%       { transform: translateX(-6px); }
+  40%       { transform: translateX(6px); }
+  60%       { transform: translateX(-4px); }
+  80%       { transform: translateX(4px); }
+}
+
+/* ── Layout ────────────────────────────────────────────────────────────── */
+.container-log {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--color-bg);
+  background-image:
+    radial-gradient(ellipse 70% 60% at 50% 40%, rgba(201, 168, 76, 0.06) 0%, transparent 70%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  padding: 2rem;
+  font-family: var(--font-body);
+}
+
+/* ── Card ──────────────────────────────────────────────────────────────── */
+.left-panel-log {
+  width: 100%;
+  max-width: 440px;
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-gold-border);
+  padding: 3rem 2.8rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  animation: fadeUp 0.85s ease both;
+  box-shadow:
+    0 0 0 1px rgba(201, 168, 76, 0.04),
+    0 24px 60px rgba(0, 0, 0, 0.5),
+    0 0 80px rgba(201, 168, 76, 0.04);
+}
+
+/* Línea dorada decorativa superior */
+.left-panel-log::before {
+  content: '';
+  display: block;
+  width: 50px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--color-gold), transparent);
+  margin-bottom: 1.6rem;
+}
+
+/* ── Brand link ────────────────────────────────────────────────────────── */
+.left-panel-log > a {
+  text-decoration: none;
+  margin-bottom: 2rem;
+}
+
+.left-panel-log > a h2 {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 300;
+  font-size: 1.55rem;
+  letter-spacing: 0.08em;
+  margin: 0;
+  background: linear-gradient(
+    105deg,
+    var(--color-gold-dim)   0%,
+    var(--color-gold-light) 40%,
+    var(--color-gold)       60%,
+    var(--color-gold-dim)   100%
+  );
+  background-size: 220% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: shimmer 6s linear infinite;
+  transition: filter 0.25s ease;
+}
+
+.left-panel-log > a:hover h2 {
+  filter: brightness(1.2);
+}
+
+/* ── Form ──────────────────────────────────────────────────────────────── */
+.left-panel-log form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.left-panel-log form h1 {
+  font-family: var(--font-display);
+  font-weight: 300;
+  font-size: 2rem;
+  letter-spacing: 0.04em;
+  color: var(--color-text);
+  margin: 0 0 1.8rem;
+  text-align: center;
+}
+
+/* ── Inputs ────────────────────────────────────────────────────────────── */
+.left-panel-log input[type="text"],
+.left-panel-log input[type="email"],
+.left-panel-log input[type="password"],
+.left-panel-log input[type="tel"] {
+  width: 100%;
+  box-sizing: border-box;
+  background: var(--color-bg-soft);
+  border: 1px solid var(--color-gold-border);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  font-size: 1rem;
+  padding: 0.82rem 1rem;
+  outline: none;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+  margin-bottom: 0.7rem;
+}
+
+.left-panel-log input::placeholder {
+  color: var(--color-text-faint);
+  font-style: italic;
+}
+
+.left-panel-log input:focus {
+  border-color: var(--color-gold);
+  box-shadow: 0 0 0 3px rgba(201, 168, 76, 0.12);
+}
+
+.left-panel-log input.input-error {
+  border-color: var(--color-error-border);
+  background: var(--color-error-bg);
+  animation: shake 0.4s ease;
+}
+
+/* ── Error messages ────────────────────────────────────────────────────── */
+.left-panel-log p {
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  color: var(--color-error);
+  margin: -0.3rem 0 0.75rem;
+  padding: 0.45rem 0.7rem;
+  border-left: 2px solid var(--color-error);
+  background: var(--color-error-bg);
+  line-height: 1.45;
+  animation: fadeUp 0.3s ease both;
+}
+
+/* ── Separator ─────────────────────────────────────────────────────────── */
+.separator {
+  margin: 0.6rem 0;
+  min-height: 1rem;
+}
+
+/* ── Buttons ───────────────────────────────────────────────────────────── */
+.big-button {
+  width: 100%;
+  padding: 0.9rem;
+  font-family: var(--font-body);
+  font-size: 1rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  border: none;
+  cursor: pointer;
+  transition: filter 0.25s ease, transform 0.2s ease, opacity 0.2s ease;
+  margin-bottom: 1.2rem;
+}
+
+.primary-button {
+  background: linear-gradient(135deg, var(--color-gold-light), var(--color-gold));
+  color: var(--color-bg);
+  font-weight: 500;
+}
+
+.primary-button:hover:not(:disabled) {
+  filter: brightness(1.12);
+  transform: translateY(-1px);
+}
+
+.primary-button:active:not(:disabled) {
+  transform: translateY(0);
+  filter: brightness(0.95);
+}
+
+.primary-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ── Login link ────────────────────────────────────────────────────────── */
+.left-panel-log form > div:last-of-type {
+  text-align: center;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  color: var(--color-text-muted);
+}
+
+.left-panel-log form > div:last-of-type a {
+  color: var(--color-gold);
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.left-panel-log form > div:last-of-type a:hover {
+  color: var(--color-gold-light);
+}
+
+/* ── Responsive ────────────────────────────────────────────────────────── */
+@media (max-width: 480px) {
+  .left-panel-log {
+    padding: 2.2rem 1.6rem;
+  }
+
+  .left-panel-log form h1 {
+    font-size: 1.6rem;
+  }
+}

@@ -26,7 +26,7 @@ console.log(isAdmin);
           </li>
 
           <li>
-            <Link to="/contact">Contacto</Link>
+            <Link to="/reservas">Reservas</Link>
           </li>
 
           {/* 👇 SOLO si NO está logeado */}
@@ -35,7 +35,19 @@ console.log(isAdmin);
               <Link to="/signin">Iniciar Sesión</Link>
             </li>
           )}
+  {isAuthenticated && (
+            <>
+           
+            {!isAdmin && (
+                <li>
+                <Link to="/mis-reservas">Mis Reservas</Link>
+              </li>
+           
 
+            )}
+               
+            </>
+          )}
           {/* 👇 SOLO si está logeado */}
           {isAuthenticated && (
             <>
@@ -56,6 +68,7 @@ console.log(isAdmin);
               </li>
             </>
           )}
+        
         </ul>
       </nav>
     </header>
