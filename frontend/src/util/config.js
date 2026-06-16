@@ -18,3 +18,5 @@ export const STORAGE_URL = "http://localhost:8080/gestor-pescaderia/public/stora
 export const POST_PLATO_ENDPOINT = `${API_BASE_URL}/api/platos`;
 export const ADMIN_ROL_ID       = 1; // cambia si tu admin tiene otro rol_id
 export const REGISTER_ENDPOINT   = `${API_BASE_URL}/api/users`;
+export const MIS_RESERVAS_ENDPOINT = `${API_BASE_URL}/api/mis-reservas`;
+export const RESERVAS_ENDPOINT     = `${API_BASE_URL}/api/reservas`;

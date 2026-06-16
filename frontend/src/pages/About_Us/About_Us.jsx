@@ -156,10 +156,7 @@ export function About_Us() {
         </div>
       </section>
 
-      {/* ── FOOTER ───────────────────────────────── */}
-      <footer className={styles.footer}>
-        <p><strong>El Artesano</strong> · Pescadería · Nerja, Málaga &nbsp;|&nbsp; © 2025 Todos los derechos reservados</p>
-      </footer>
+
 
     </div>
   )

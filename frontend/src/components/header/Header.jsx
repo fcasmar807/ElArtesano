@@ -48,6 +48,16 @@ console.log(isAdmin);
                
             </>
           )}
+          {isAuthenticated && (
+            <>
+            {isAdmin && (
+                <li>
+                <Link to="/admin/subir-plato">Subir Plato</Link>
+              </li>
+            )}
+            </>
+          )}
+
           {/* 👇 SOLO si está logeado */}
           {isAuthenticated && (
             <>
